@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Tic-Tac-Toe</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="screen active">
+      <div class="logo">⭕</div>
+      <h1 class="title">TIC-TAC-TOE</h1>
+      <p class="subtitle">You are <strong>X</strong>. Can you beat the CPU?</p>
+      <button class="btn" id="start-btn">TAP TO PLAY</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+      <div id="turn-banner">Your turn — X</div>
+      <div id="board">
+        <div class="cell" data-i="0"></div>
+        <div class="cell" data-i="1"></div>
+        <div class="cell" data-i="2"></div>
+        <div class="cell" data-i="3"></div>
+        <div class="cell" data-i="4"></div>
+        <div class="cell" data-i="5"></div>
+        <div class="cell" data-i="6"></div>
+        <div class="cell" data-i="7"></div>
+        <div class="cell" data-i="8"></div>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+      <div class="logo" id="result-emoji">🎉</div>
+      <h1 class="title" id="result-title">YOU WIN!</h1>
+      <div class="score-block">
+        <div class="score-row small">
+          <span class="score-lbl">W</span>
+          <span class="score-val sm" id="wins">0</span>
+        </div>
+        <div class="score-row small">
+          <span class="score-lbl">D</span>
+          <span class="score-val sm" id="draws">0</span>
+        </div>
+        <div class="score-row small">
+          <span class="score-lbl">L</span>
+          <span class="score-val sm" id="losses">0</span>
+        </div>
+      </div>
+      <button class="btn" id="restart-btn">PLAY AGAIN</button>
+    </div>
+
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

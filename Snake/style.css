@@ -1,0 +1,149 @@
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #111;
+  display: flex; justify-content: center; align-items: center;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+
+/* ── Wrapper ──────────────────────────────────────────────── */
+#game-wrapper {
+  position: relative;
+  width:  min(430px, 100vw);
+  height: min(800px, 100svh);
+  background: #F5C59F;
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,.6);
+}
+@media (max-width: 430px) {
+  #game-wrapper { border-radius: 0; }
+}
+
+/* ── Screens ──────────────────────────────────────────────── */
+.screen {
+  position: absolute; inset: 0;
+  display: none; flex-direction: column;
+  justify-content: center; align-items: center;
+  gap: 16px; z-index: 10;
+}
+.screen.active { display: flex; }
+
+#start-screen, #gameover-screen { background: #F5C59F; }
+#game-screen { background: transparent; pointer-events: auto; }
+
+/* ── HUD ──────────────────────────────────────────────────── */
+#hud {
+  position: absolute;
+  top: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 20; pointer-events: none;
+}
+#score {
+  font-size: 52px; font-weight: 900;
+  letter-spacing: -2px;
+  color: rgba(0,0,0,.15);
+}
+
+/* ── Canvas ───────────────────────────────────────────────── */
+#canvas {
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+/* ── D-pad ────────────────────────────────────────────────── */
+#dpad {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 20;
+}
+.dpad-row {
+  display: flex;
+  gap: 4px;
+}
+.dpad-btn {
+  width: 56px; height: 56px;
+  border: none; border-radius: 14px;
+  background: rgba(58,42,26,.18);
+  color: #3a2a1a;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation;
+  transition: background .1s;
+  -webkit-user-select: none; user-select: none;
+}
+.dpad-btn:active { background: rgba(58,42,26,.35); }
+
+/* ── Logo ─────────────────────────────────────────────────── */
+.logo {
+  font-size: 5rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 16px rgba(58,42,26,.3));
+  animation: logoBounce 2s ease-in-out infinite;
+}
+@keyframes logoBounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+/* ── Typography ───────────────────────────────────────────── */
+.title {
+  font-size: 56px; font-weight: 900;
+  letter-spacing: -3px; color: #3a2a1a;
+}
+.subtitle {
+  font-size: 18px; line-height: 1.5;
+  color: #7a5a3a; text-align: center;
+}
+.hint {
+  font-size: 13px; color: rgba(58,42,26,.45);
+  letter-spacing: 1px; margin-top: -6px;
+}
+
+/* ── Score block ──────────────────────────────────────────── */
+.score-block {
+  background: rgba(0,0,0,.08);
+  border-radius: 20px;
+  padding: 20px 40px;
+  display: flex; flex-direction: column; gap: 8px;
+  text-align: center;
+}
+.score-row {
+  display: flex; flex-direction: column; align-items: center;
+}
+.score-lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 4px; color: #9a7a5a;
+}
+.score-val {
+  font-size: 64px; font-weight: 900;
+  line-height: 1; letter-spacing: -3px;
+  color: #3a2a1a;
+}
+.score-val.accent { color: #C4956A; font-size: 44px; }
+
+/* ── Button ───────────────────────────────────────────────── */
+.btn {
+  padding: 18px 52px;
+  border: none; border-radius: 50px;
+  background: #3a2a1a; color: #F5C59F;
+  font-size: 17px; font-weight: 800;
+  letter-spacing: 2px; cursor: pointer;
+  transition: transform .1s, background .15s;
+  touch-action: manipulation;
+}
+.btn:hover  { background: #5a4030; }
+.btn:active { transform: scale(.95); }

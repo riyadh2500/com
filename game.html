@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Arena</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background orbs -->
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="bg-orb orb3"></div>
+
+  <div class="arena-wrapper">
+
+    <!-- Header -->
+    <header class="arena-header">
+      <div class="header-icon">🎮</div>
+      <h1 class="arena-title">GAME ARENA</h1>
+      <p class="arena-subtitle">Pick a game and start playing</p>
+    </header>
+
+    <!-- Game Cards -->
+    <main class="games-grid">
+
+      <!-- Card 1: X Dodge -->
+      <a href="Cricle BOOM/game/index.html" class="game-card" id="card-xdodge">
+        <div class="card-glow"></div>
+        <div class="card-badge">ACTION</div>
+        <div class="card-preview">
+          <div class="card-preview-emoji">✕</div>
+        </div>
+        <div class="card-info">
+          <h2 class="card-title">X DODGE</h2>
+          <p class="card-desc">Dodge the incoming X's — survive as long as you can. Tap or swipe to move between lanes.</p>
+          <div class="card-meta">
+            <span class="meta-tag">🕹️ Arcade</span>
+            <span class="meta-tag">⚡ Fast-paced</span>
+          </div>
+        </div>
+        <div class="card-play-btn">
+          <span>PLAY</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+
+      <!-- Card 2: Rock Paper Scissors -->
+      <a href="Rock Paper Scissors/index.html" class="game-card" id="card-rps">
+        <div class="card-glow"></div>
+        <div class="card-badge">CLASSIC</div>
+        <div class="card-preview">
+          <div class="card-preview-emoji rps-emoji">
+            <span>🪨</span><span>📄</span><span>✂️</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <h2 class="card-title">ROCK PAPER SCISSORS</h2>
+          <p class="card-desc">Challenge the CPU in the classic hand game. Who will outsmart who? Best of many wins!</p>
+          <div class="card-meta">
+            <span class="meta-tag">🧠 Strategy</span>
+            <span class="meta-tag">🎲 vs CPU</span>
+          </div>
+        </div>
+        <div class="card-play-btn">
+          <span>PLAY</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+
+      <!-- Card 3: Snake -->
+      <a href="Snake/index.html" class="game-card" id="card-snake">
+        <div class="card-glow"></div>
+        <div class="card-badge">CLASSIC</div>
+        <div class="card-preview">
+          <div class="card-preview-emoji snake-emoji">🐍</div>
+        </div>
+        <div class="card-info">
+          <h2 class="card-title">SNAKE</h2>
+          <p class="card-desc">Eat the fruit, grow longer, don't bite yourself. Arrow keys or swipe to slither.</p>
+          <div class="card-meta">
+            <span class="meta-tag">🕹️ Arcade</span>
+            <span class="meta-tag">📈 High Score</span>
+          </div>
+        </div>
+        <div class="card-play-btn">
+          <span>PLAY</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+
+      <!-- Card 4: Whack-a-Mole -->
+      <a href="Whack-a-Mole/index.html" class="game-card" id="card-whack">
+        <div class="card-glow"></div>
+        <div class="card-badge">REFLEX</div>
+        <div class="card-preview">
+          <div class="card-preview-emoji whack-emoji">🦔</div>
+        </div>
+        <div class="card-info">
+          <h2 class="card-title">WHACK-A-MOLE</h2>
+          <p class="card-desc">Tap the critters before they duck away. 30 seconds — how many can you whack?</p>
+          <div class="card-meta">
+            <span class="meta-tag">👆 Tap</span>
+            <span class="meta-tag">⏱️ Timed</span>
+          </div>
+        </div>
+        <div class="card-play-btn">
+          <span>PLAY</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+
+      <!-- Card 5: Memory -->
+      <a href="Memory/index.html" class="game-card" id="card-memory">
+        <div class="card-glow"></div>
+        <div class="card-badge">PUZZLE</div>
+        <div class="card-preview">
+          <div class="card-preview-emoji memory-emoji">🃏</div>
+        </div>
+        <div class="card-info">
+          <h2 class="card-title">MEMORY MATCH</h2>
+          <p class="card-desc">Flip cards and find all 8 matching pairs. Fewer moves means a better score.</p>
+          <div class="card-meta">
+            <span class="meta-tag">🧠 Memory</span>
+            <span class="meta-tag">🃏 Pairs</span>
+          </div>
+        </div>
+        <div class="card-play-btn">
+          <span>PLAY</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+
+      <!-- Card 6: Breakout -->
+      <a href="Breakout/index.html" class="game-card" id="card-breakout">
+        <div class="card-glow"></div>
+        <div class="card-badge">ACTION</div>
+        <div class="card-preview">
+          <div class="card-preview-emoji breakout-emoji">🧱</div>
+        </div>
+        <div class="card-info">
+          <h2 class="card-title">BREAKOUT</h2>
+          <p class="card-desc">Smash all the bricks with a bouncing ball. Don't let it fall off the bottom!</p>
+          <div class="card-meta">
+            <span class="meta-tag">⚡ Fast-paced</span>
+            <span class="meta-tag">🏆 Score</span>
+          </div>
+        </div>
+        <div class="card-play-btn">
+          <span>PLAY</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+
+      <!-- Card 7: Tic-Tac-Toe -->
+      <a href="Tic-Tac-Toe/index.html" class="game-card" id="card-ttt">
+        <div class="card-glow"></div>
+        <div class="card-badge">STRATEGY</div>
+        <div class="card-preview">
+          <div class="card-preview-emoji ttt-emoji">
+            <span>✕</span><span>⭕</span><span>✕</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <h2 class="card-title">TIC-TAC-TOE</h2>
+          <p class="card-desc">You're X, the CPU is O. First to three in a row wins. Can you beat a perfect AI?</p>
+          <div class="card-meta">
+            <span class="meta-tag">🧠 Strategy</span>
+            <span class="meta-tag">🤖 vs CPU</span>
+          </div>
+        </div>
+        <div class="card-play-btn">
+          <span>PLAY</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="arena-footer">
+      <p>7 Games Available &nbsp;·&nbsp; More Coming Soon</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Mouse parallax tilt on cards
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        const dx = (e.clientX - cx) / (rect.width  / 2);
+        const dy = (e.clientY - cy) / (rect.height / 2);
+        card.style.transform =
+          `perspective(900px) rotateY(${dx * 6}deg) rotateX(${-dy * 6}deg) translateY(-6px)`;
+        card.querySelector('.card-glow').style.background =
+          `radial-gradient(circle at ${50 + dx * 30}% ${50 + dy * 30}%, rgba(255,255,255,0.12) 0%, transparent 60%)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.querySelector('.card-glow').style.background = '';
+      });
+    });
+
+    // Stagger card entrance animation
+    document.querySelectorAll('.game-card').forEach((card, i) => {
+      card.style.animationDelay = `${0.05 + i * 0.09}s`;
+    });
+  </script>
+</body>
+</html>

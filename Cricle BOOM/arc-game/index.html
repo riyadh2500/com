@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Arc Dodge</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="screen active">
+      <div class="logo">
+        <div class="logo-arc"></div>
+      </div>
+      <h1 class="title">ARC DODGE</h1>
+      <p class="subtitle">Rotate the arc.<br>Dodge the X's.</p>
+      <button class="btn" id="start-btn">TAP TO PLAY</button>
+      <p class="hint">← Drag or tap sides →</p>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+      <div id="hud">
+        <span id="score">0</span>
+      </div>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="gameover-screen" class="screen">
+      <h1 class="title">DEAD</h1>
+      <div class="score-block">
+        <div class="score-row">
+          <span class="score-lbl">SCORE</span>
+          <span class="score-val" id="final-score">0</span>
+        </div>
+        <div class="score-row">
+          <span class="score-lbl">BEST</span>
+          <span class="score-val accent" id="best-score">0</span>
+        </div>
+      </div>
+      <button class="btn" id="restart-btn">PLAY AGAIN</button>
+    </div>
+
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

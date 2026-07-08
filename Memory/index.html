@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Memory Match</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-wrapper">
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="screen active">
+      <div class="logo">🃏</div>
+      <h1 class="title">MEMORY</h1>
+      <p class="subtitle">Flip cards and find<br>all matching pairs.</p>
+      <button class="btn" id="start-btn">TAP TO PLAY</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+      <div id="hud">
+        <div class="hud-item">
+          <span class="hud-lbl">MOVES</span>
+          <span class="hud-val" id="moves">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-lbl">PAIRS</span>
+          <span class="hud-val" id="pairs">0 / 8</span>
+        </div>
+      </div>
+      <div id="board"></div>
+    </div>
+
+    <!-- WIN SCREEN -->
+    <div id="win-screen" class="screen">
+      <div class="logo">🎉</div>
+      <h1 class="title">YOU WIN!</h1>
+      <div class="score-block">
+        <div class="score-row">
+          <span class="score-lbl">MOVES</span>
+          <span class="score-val" id="final-moves">0</span>
+        </div>
+        <div class="score-row">
+          <span class="score-lbl">BEST</span>
+          <span class="score-val accent" id="best-moves">—</span>
+        </div>
+      </div>
+      <button class="btn" id="restart-btn">PLAY AGAIN</button>
+    </div>
+
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

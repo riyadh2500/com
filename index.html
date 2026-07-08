@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Web3 Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M3 20L12 4L21 20" stroke="#00e5ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="7" y1="14" x2="17" y2="14" stroke="#00e5ff" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="brand">Web3 Dashboard</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="ntab active">Dashboard</button>
+    <button class="ntab">Rio AI</button>
+    <button class="ntab">Build with Rialo</button>
+    <button class="ntab">Game Arena</button>
+    <button class="ntab">Predictly</button>
+  </div>
+  <div class="nav-right">
+    <div class="user-pill">Smplsh</div>
+    <div class="notif-btn"><span class="ndot"></span></div>
+    <div class="avatar">SH</div>
+  </div>
+</nav>
+
+<div class="scene">
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- RIALO CARD -->
+  <div class="card card-rialo">
+    <div class="card-hd">
+      <span class="chip chip-c">R</span>
+      <span class="ctitle">Rialo Network</span>
+      <span class="live-badge" id="rialoStatus">LIVE</span>
+    </div>
+    <div class="metrics">
+      <div class="mbox">
+        <div class="mlbl">Block Height</div>
+        <div class="mval" id="blockHeight">--</div>
+      </div>
+      <div class="mbox">
+        <div class="mlbl">Block Stats</div>
+        <canvas id="spark" class="spark"></canvas>
+      </div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-item"><div class="rt-lbl">SOL Price</div><div class="rt-val" id="priceSOL">--</div></div>
+      <div class="rt-item"><div class="rt-lbl">24h Change</div><div class="rt-val" id="changeSOL">--</div></div>
+      <div class="rt-item"><div class="rt-lbl">TPS (est.)</div><div class="rt-val" id="tpsSOL">--</div></div>
+    </div>
+    <div class="guide-box">
+      <div class="guide-hd">Quick Start Guide</div>
+      <p class="guide-sub">Starting the steps you better-empty steps.</p>
+      <ol class="gsteps">
+        <li><span class="gn">1</span><span>Action Rialo Snarscriwers</span></li>
+        <li><span class="gn">2</span><span>Create Web3 protocol</span></li>
+        <li><span class="gn">3</span><div><span>Connect vnorehants</span><small>Minor ronome btest connections.</small></div></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- SHELBY CARD -->
+  <div class="card card-shelby">
+    <div class="card-hd">
+      <span class="chip chip-p">S</span>
+      <span class="ctitle">Shelby Protocol</span>
+      <span class="live-badge pink" id="shelbyStatus">LIVE</span>
+    </div>
+    <div class="rt-row">
+      <div class="rt-item"><div class="rt-lbl">APT Price</div><div class="rt-val" id="priceAPT">--</div></div>
+      <div class="rt-item"><div class="rt-lbl">24h Change</div><div class="rt-val" id="changeAPT">--</div></div>
+      <div class="rt-item"><div class="rt-lbl">Epoch</div><div class="rt-val" id="shelbyEpoch">--</div></div>
+    </div>
+    <div class="shelby-row">
+      <div class="scol">
+        <div class="slbl">Storage Capacity</div>
+        <div class="sbar-wrap"><div class="sbar"></div></div>
+        <div class="spcts"><span class="sp-on">85%</span><span class="sp-off">15%</span></div>
+        <div class="slbls"><span>Used Stored</span><span>Available</span></div>
+      </div>
+      <div class="donut-col">
+        <div class="slbl">Total</div>
+        <div class="donut-wrap">
+          <canvas id="donut" width="80" height="80"></canvas>
+          <span class="donut-pct">85%</span>
+        </div>
+        <div class="donut-leg"><span class="ld ld-c"></span>Used <span class="ld ld-g"></span>Available</div>
+      </div>
+    </div>
+    <div class="sdetail">
+      <div class="sdico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01"/></svg></div>
+      <div><div class="sdbig" id="shelbyBlock">fetching...</div><div class="sdsub">Block Height</div></div>
+      <div class="sdright"><div class="sdval" id="storedSize">$123.8 MB</div><div class="sdsub">Date Stored</div></div>
+    </div>
+  </div>
+
+  <!-- ARC DEX CARD -->
+  <div class="card card-arc">
+    <div class="card-hd">
+      <span class="chip chip-v">A</span>
+      <span class="ctitle">Arc DEX</span>
+      <span class="live-badge purple" id="arcStatus">LIVE</span>
+    </div>
+    <div class="arc-body">
+      <div class="arc-left">
+        <div class="vtitle">Arc DEX — Stable Pairs</div>
+
+        <!-- Stablecoin tokens row -->
+        <div class="token-grid">
+          <div class="token-card usdc-card">
+            <div class="token-icon usdc-icon">
+              <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="16" fill="#2775CA"/>
+                <path d="M20.022 18.124c0-2.124-1.28-2.852-3.84-3.156c-1.828-.234-2.194-.702-2.194-1.518c0-.816.624-1.35 1.868-1.35c1.128 0 1.752.384 2.07 1.332a.43.43 0 00.41.3h.93a.42.42 0 00.42-.434v-.024a3.18 3.18 0 00-2.85-2.586V9.844a.45.45 0 00-.45-.45h-.876a.45.45 0 00-.45.45v1.836c-1.818.234-2.964 1.44-2.964 2.958c0 2.004 1.228 2.778 3.788 3.084c1.7.234 2.25.624 2.25 1.548c0 .924-.816 1.56-1.92 1.56c-1.506 0-2.01-.636-2.16-1.548a.42.42 0 00-.414-.348h-.966a.42.42 0 00-.42.42v.024c.186 1.692 1.332 2.904 3.054 3.18v1.86a.45.45 0 00.45.45h.876a.45.45 0 00.45-.45v-1.842c1.836-.27 3.024-1.518 3.024-3.108l-.006-.012z" fill="white"/>
+              </svg>
+            </div>
+            <div class="token-info">
+              <div class="token-name">USDC</div>
+              <div class="token-sub">USD Coin</div>
+            </div>
+            <div class="token-price-col">
+              <div class="token-price" id="priceUSDC">--</div>
+              <div class="token-change" id="changeUSDC">--</div>
+            </div>
+            <div class="token-vol">
+              <div class="tvol-lbl">24h Vol</div>
+              <div class="tvol-val" id="volUSDC">--</div>
+            </div>
+          </div>
+
+          <div class="token-card usdt-card">
+            <div class="token-icon usdt-icon">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="16" fill="#26A17B"/>
+                <path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042c-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658s2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061c1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658s-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V9H8.664v2.427h5.414v2.365c-4.4.202-7.708 1.074-7.708 2.128s3.308 1.926 7.708 2.129v7.641h3.844v-7.644c4.392-.202 7.694-1.073 7.694-2.127s-3.302-1.926-7.694-2.128" fill="white"/>
+              </svg>
+            </div>
+            <div class="token-info">
+              <div class="token-name">USDT</div>
+              <div class="token-sub">Tether</div>
+            </div>
+            <div class="token-price-col">
+              <div class="token-price" id="priceUSDT">--</div>
+              <div class="token-change" id="changeUSDT">--</div>
+            </div>
+            <div class="token-vol">
+              <div class="tvol-lbl">24h Vol</div>
+              <div class="tvol-val" id="volUSDT">--</div>
+            </div>
+          </div>
+
+          <div class="token-card eurc-card">
+            <div class="token-icon eurc-icon">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="16" fill="#2775CA"/>
+                <text x="16" y="21" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="Arial">€</text>
+              </svg>
+            </div>
+            <div class="token-info">
+              <div class="token-name">EURC</div>
+              <div class="token-sub">Euro Coin</div>
+            </div>
+            <div class="token-price-col">
+              <div class="token-price" id="priceEURC">--</div>
+              <div class="token-change" id="changeEURC">--</div>
+            </div>
+            <div class="token-vol">
+              <div class="tvol-lbl">24h Vol</div>
+              <div class="tvol-val" id="volEURC">--</div>
+            </div>
+          </div>
+        </div>
+
+        <canvas id="volChart" class="volchart"></canvas>
+      </div>
+      <div class="arc-right">
+        <button class="wallet-btn" id="walletBtn">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.8">
+            <rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 13h.01"/><path d="M2 10h20"/>
+          </svg>
+          <span>Connect<br>Wallet</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pgdots left-pg"><span class="pgd"></span><span class="pgd on"></span><span class="pgd"></span></div>
+  <div class="pgdots right-pg"><span class="pgd"></span><span class="pgd on"></span><span class="pgd"></span></div>
+
+  <!-- ═══ OVERVIEW PAGE — Rio AI ═══ -->
+  <div id="overviewPage" class="ov-page ov-iframe-page" style="display:none">
+    <iframe
+      id="rioAiFrame"
+      src="http://localhost:3001"
+      class="rio-iframe"
+      frameborder="0"
+      allow="clipboard-write"
+      title="Rio AI"
+    ></iframe>
+  </div>
+</div>
+
+  <!-- ═══ BUILD WITH RIALO PAGE ═══ -->
+  <div id="buildPage" class="ov-page" style="display:none">
+    <canvas id="ovBg2" class="ov-canvas"></canvas>
+    <div class="ov-content">
+
+      <!-- Hero -->
+      <div class="bw-hero">
+        <div class="bw-hero-left">
+          <div class="bw-badge">
+            <span class="bw-badge-dot"></span>
+            Rialo — Now in Early Access
+          </div>
+          <h1 class="bw-title">Build the Next<br><span class="bw-title-glow">Internet-Scale</span><br>dApp on Rialo</h1>
+          <p class="bw-subtitle">RISC-V smart contracts · Solana VM compatible · 50ms block time · Gas-less transactions · Native web calls — no oracles needed</p>
+          <div class="bw-cta-row">
+            <a href="https://rialo-doc-ajmul.vercel.app/" target="_blank" class="bw-btn bw-btn-primary">Read the Docs ↗</a>
+            <a href="https://rialo.io" target="_blank" class="bw-btn bw-btn-secondary">Visit Rialo.io ↗</a>
+          </div>
+        </div>
+        <div class="bw-hero-right">
+          <div class="bw-stat-grid">
+            <div class="bw-stat-box">
+              <div class="bw-stat-val cyan">50ms</div>
+              <div class="bw-stat-lbl">Block Time</div>
+            </div>
+            <div class="bw-stat-box">
+              <div class="bw-stat-val cyan">0</div>
+              <div class="bw-stat-lbl">Gas Fees</div>
+            </div>
+            <div class="bw-stat-box">
+              <div class="bw-stat-val pink">$20M</div>
+              <div class="bw-stat-lbl">Seed Funding</div>
+            </div>
+            <div class="bw-stat-box">
+              <div class="bw-stat-val pink" id="bwBlock">--</div>
+              <div class="bw-stat-lbl">Block Height</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature cards -->
+      <div class="bw-section-title">Why Build on Rialo?</div>
+      <div class="bw-features">
+        <div class="bw-feat">
+          <div class="bw-feat-icon">⚡</div>
+          <div class="bw-feat-name">RISC-V Smart Contracts</div>
+          <div class="bw-feat-desc">Write contracts in any language that compiles to RISC-V. More powerful and flexible than EVM or SVM alone.</div>
+        </div>
+        <div class="bw-feat">
+          <div class="bw-feat-icon">🔄</div>
+          <div class="bw-feat-name">Solana VM Compatible</div>
+          <div class="bw-feat-desc">Familiar tooling, same developer experience. Port existing Solana programs or start fresh with extended capabilities.</div>
+        </div>
+        <div class="bw-feat">
+          <div class="bw-feat-icon">🌐</div>
+          <div class="bw-feat-name">Native Web Calls</div>
+          <div class="bw-feat-desc">Call external APIs, fetch real-world data, and trigger on-chain actions from external events — without oracles or middleware.</div>
+        </div>
+        <div class="bw-feat">
+          <div class="bw-feat-icon">⏱️</div>
+          <div class="bw-feat-name">Event-Driven Execution</div>
+          <div class="bw-feat-desc">Set timers, react to price feeds, and automate complex workflows entirely on-chain. Your app runs itself.</div>
+        </div>
+        <div class="bw-feat">
+          <div class="bw-feat-icon">🔒</div>
+          <div class="bw-feat-name">Enterprise Controls</div>
+          <div class="bw-feat-desc">IAM/AML/SIEM integration built in. Rialo is designed for regulated institutions — governance, auditability, and compliance ready.</div>
+        </div>
+        <div class="bw-feat">
+          <div class="bw-feat-icon">💎</div>
+          <div class="bw-feat-name">RWA Issuance</div>
+          <div class="bw-feat-desc">Tokenize real-world assets natively. Launch tokenized deposits, run agent-based trading, and issue cross-domain instruments.</div>
+        </div>
+      </div>
+
+      <!-- Code example -->
+      <div class="bw-section-title">Quick Start</div>
+      <div class="bw-code-row">
+        <div class="bw-code-card">
+          <div class="bw-code-header">
+            <span class="bw-code-dot red"></span>
+            <span class="bw-code-dot yellow"></span>
+            <span class="bw-code-dot green"></span>
+            <span class="bw-code-lang">Rialo · Event-Driven Contract</span>
+          </div>
+          <pre class="bw-code"><span class="cc">// Rialo native web call — no oracle needed</span>
+<span class="ck">use</span> rialo::prelude::<span class="ct">*</span>;
+
+<span class="ck">#[rialo::contract]</span>
+<span class="ck">pub fn</span> <span class="cf">on_price_feed</span>(ctx: Context, feed: PriceFeed) {
+    <span class="ck">let</span> price = feed.<span class="cf">get</span>(<span class="cs">"BTC/USD"</span>);
+
+    <span class="ck">if</span> price &gt; <span class="cn">70_000</span> {
+        ctx.<span class="cf">emit</span>(Event::PriceAlert {
+            asset: <span class="cs">"BTC"</span>,
+            price,
+            threshold: <span class="cn">70_000</span>,
+        });
+    }
+}
+
+<span class="cc">// Native HTTP call — built into the runtime</span>
+<span class="ck">#[rialo::http_trigger]</span>
+<span class="ck">pub async fn</span> <span class="cf">fetch_market_data</span>() -&gt; <span class="ct">Result</span>&lt;<span class="ct">MarketData</span>&gt; {
+    <span class="ck">let</span> data = http::<span class="cf">get</span>(<span class="cs">"https://api.rialo.io/v1/markets"</span>)
+        .<span class="cf">await</span>?;
+    <span class="ck">Ok</span>(data.<span class="cf">json</span>::&lt;<span class="ct">MarketData</span>&gt;()?)
+}</pre>
+        </div>
+
+        <div class="bw-steps">
+          <div class="bw-step">
+            <div class="bw-step-num">01</div>
+            <div>
+              <div class="bw-step-title">Install Rialo CLI</div>
+              <div class="bw-step-cmd">cargo install rialo-cli</div>
+            </div>
+          </div>
+          <div class="bw-step">
+            <div class="bw-step-num">02</div>
+            <div>
+              <div class="bw-step-title">Create a project</div>
+              <div class="bw-step-cmd">rialo new my-dapp</div>
+            </div>
+          </div>
+          <div class="bw-step">
+            <div class="bw-step-num">03</div>
+            <div>
+              <div class="bw-step-title">Deploy to testnet</div>
+              <div class="bw-step-cmd">rialo deploy --network testnet</div>
+            </div>
+          </div>
+          <div class="bw-step">
+            <div class="bw-step-num">04</div>
+            <div>
+              <div class="bw-step-title">Read the full docs</div>
+              <a href="https://rialo-doc-ajmul.vercel.app/" target="_blank" class="bw-step-link">rialo-doc-ajmul.vercel.app ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backed by -->
+      <div class="bw-backed">
+        <div class="bw-backed-label">Backed by</div>
+        <div class="bw-backed-logo">🔺 Pantera Capital</div>
+        <div class="bw-backed-sep">·</div>
+        <div class="bw-backed-logo">Built by Subzero Labs</div>
+        <div class="bw-backed-sep">·</div>
+        <div class="bw-backed-logo">Mainnet · Aug 2025</div>
+      </div>
+
+      <!-- ── Shelby Cavalier Setup ── -->
+      <div class="bw-section-title" style="margin-top:32px">🗄️ Shelby — Cavalier Setup</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:20px;max-width:680px;line-height:1.7">
+        The <strong style="color:var(--p)">Cavalier Setup</strong> is the recommended way to onboard as a Shelby storage provider.
+        Unpack the provider bundle, install the required dependencies, and register your node on the Aptos chain.
+      </p>
+
+      <div class="cav-grid">
+
+        <div class="cav-step-card">
+          <div class="cav-num">1</div>
+          <div class="cav-body">
+            <div class="cav-title">Download the Provider Bundle</div>
+            <div class="cav-desc">Fetch the latest Shelby provider bundle from the official registry. This contains the node binary, config templates, and the Cavalier bootstrap script.</div>
+            <div class="bw-code-card" style="margin-top:10px">
+              <div class="bw-code-header"><span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span><span class="bw-code-lang">bash</span></div>
+              <pre class="bw-code"><span class="cc"># Download the Shelby Cavalier bundle</span>
+<span class="cf">curl</span> -fsSL https://releases.shelby.xyz/cavalier/latest.tar.gz \
+  -o shelby-cavalier.tar.gz
+
+<span class="cc"># Verify the checksum</span>
+<span class="cf">sha256sum</span> -c shelby-cavalier.tar.gz.sha256</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="cav-step-card">
+          <div class="cav-num">2</div>
+          <div class="cav-body">
+            <div class="cav-title">Unpack the Bundle</div>
+            <div class="cav-desc">Extract the archive into your preferred installation directory. The bundle includes the <code class="cav-code">shelby-node</code> binary, Cavalier CLI, and default configuration files.</div>
+            <div class="bw-code-card" style="margin-top:10px">
+              <div class="bw-code-header"><span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span><span class="bw-code-lang">bash</span></div>
+              <pre class="bw-code"><span class="cc"># Create the install directory</span>
+<span class="cf">mkdir</span> -p ~/shelby-cavalier &amp;&amp; <span class="cf">cd</span> ~/shelby-cavalier
+
+<span class="cc"># Unpack the bundle</span>
+<span class="cf">tar</span> -xzf ~/shelby-cavalier.tar.gz --strip-components=1
+
+<span class="cc"># Confirm contents</span>
+<span class="cf">ls</span> -la
+<span class="cc"># shelby-node  cavalier  config/  scripts/  README.md</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="cav-step-card">
+          <div class="cav-num">3</div>
+          <div class="cav-body">
+            <div class="cav-title">Install Dependencies</div>
+            <div class="cav-desc">Run the Cavalier dependency installer. This sets up the Aptos CLI, Shelby SDK, required Rust toolchain, and configures your system paths automatically.</div>
+            <div class="bw-code-card" style="margin-top:10px">
+              <div class="bw-code-header"><span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span><span class="bw-code-lang">bash</span></div>
+              <pre class="bw-code"><span class="cc"># Run the Cavalier dependency installer</span>
+<span class="cf">./cavalier</span> setup --install-deps
+
+<span class="cc"># This installs:</span>
+<span class="cc">#   ✓ Rust toolchain (stable)</span>
+<span class="cc">#   ✓ Aptos CLI v3.x</span>
+<span class="cc">#   ✓ @shelby-protocol/sdk</span>
+<span class="cc">#   ✓ shelby-node binary</span>
+
+<span class="cc"># Verify everything is ready</span>
+<span class="cf">./cavalier</span> doctor</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="cav-step-card">
+          <div class="cav-num">4</div>
+          <div class="cav-body">
+            <div class="cav-title">Configure Storage</div>
+            <div class="cav-desc">Edit the provider config to set your storage capacity, fiber endpoint, and Aptos wallet. Cavalier uses this to register your node and begin earning storage rewards.</div>
+            <div class="bw-code-card" style="margin-top:10px">
+              <div class="bw-code-header"><span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span><span class="bw-code-lang">config/provider.toml</span></div>
+              <pre class="bw-code"><span class="cc"># Shelby Cavalier — provider.toml</span>
+
+[storage]
+<span class="ck">capacity_gb</span>  = <span class="cn">500</span>
+<span class="ck">data_dir</span>     = <span class="cs">"/data/shelby"</span>
+<span class="ck">erasure_code</span> = <span class="cs">"reed-solomon-8-4"</span>
+
+[network]
+<span class="ck">fiber_endpoint</span> = <span class="cs">"fiber.shelby.xyz:9000"</span>
+<span class="ck">public_ip</span>      = <span class="cs">"auto"</span>
+
+[aptos]
+<span class="ck">wallet</span>  = <span class="cs">"0xYOUR_WALLET_ADDRESS"</span>
+<span class="ck">network</span> = <span class="cs">"mainnet"</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="cav-step-card">
+          <div class="cav-num">5</div>
+          <div class="cav-body">
+            <div class="cav-title">Register &amp; Start Node</div>
+            <div class="cav-desc">Register your node on-chain and start the Shelby storage daemon. Once registered, your node begins serving blobs and earning micropayment rewards.</div>
+            <div class="bw-code-card" style="margin-top:10px">
+              <div class="bw-code-header"><span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span><span class="bw-code-lang">bash</span></div>
+              <pre class="bw-code"><span class="cc"># Register node on Aptos mainnet</span>
+<span class="cf">./cavalier</span> register --config config/provider.toml
+
+<span class="cc"># Start the storage daemon</span>
+<span class="cf">./shelby-node</span> start --config config/provider.toml
+
+<span class="cc"># Monitor node status</span>
+<span class="cf">./cavalier</span> status
+
+<span class="cc"># 🟢 Node registered · Serving 500GB · Earning APT</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="cav-step-card cav-info">
+          <div class="cav-num" style="background:rgba(255,77,184,.15);color:var(--p);border-color:rgba(255,77,184,.3)">📚</div>
+          <div class="cav-body">
+            <div class="cav-title">Further Reading</div>
+            <div class="cav-desc" style="margin-bottom:12px">Explore the full Shelby developer documentation, network explorer, and media kit to go deeper.</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <a href="https://shelby-network-tracker-ajmul.vercel.app/" target="_blank" class="bw-btn bw-btn-primary" style="text-align:center;text-decoration:none;font-size:11px">Network Tracker ↗</a>
+              <a href="https://explorer.shelby.xyz/" target="_blank" class="bw-btn bw-btn-secondary" style="text-align:center;text-decoration:none;font-size:11px">Shelby Explorer ↗</a>
+              <a href="https://media-kit.shelby.xyz/" target="_blank" class="bw-btn bw-btn-secondary" style="text-align:center;text-decoration:none;font-size:11px">Media Kit ↗</a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end cav-grid -->
+
+      <!-- ── DEX Aggregator SDK Setup ── -->
+      <div class="bw-section-title" style="margin-top:36px">⚡ EVM DEX Aggregator Setup</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:20px;max-width:700px;line-height:1.7">
+        Research-backed setup guide for the three leading EVM swap aggregator SDKs — <strong style="color:var(--c)">1inch API v6</strong>,
+        <strong style="color:var(--v)">0x Swap API v2</strong>, and <strong style="color:#f97316">Uniswap v4 SDK</strong>.
+        Each supports 12–20+ EVM chains with smart order routing, Permit2, and ready-to-sign calldata.
+      </p>
+
+      <!-- Comparison table -->
+      <div class="dex-compare">
+        <div class="dex-col dex-inch">
+          <div class="dex-col-head">
+            <span class="dex-badge" style="background:rgba(0,229,255,.12);color:var(--c);border-color:rgba(0,229,255,.3)">1inch</span>
+            <div class="dex-col-title">1inch Swap API v6</div>
+            <div class="dex-col-sub">13+ APIs · 12+ EVM chains · Fusion intent orders</div>
+          </div>
+          <div class="dex-props">
+            <div class="dex-prop"><span class="dex-k">Endpoint</span><code class="dex-v">https://api.1inch.dev/swap/v6.0/</code></div>
+            <div class="dex-prop"><span class="dex-k">Auth</span><code class="dex-v">Bearer API key (portal.1inch.dev)</code></div>
+            <div class="dex-prop"><span class="dex-k">Chains</span><code class="dex-v">ETH, BSC, Polygon, Arbitrum, Base +7</code></div>
+            <div class="dex-prop"><span class="dex-k">Sources</span><code class="dex-v">Uniswap, Curve, Balancer, 300+ pools</code></div>
+            <div class="dex-prop"><span class="dex-k">SDK</span><code class="dex-v">@1inch/swap-sdk (npm)</code></div>
+          </div>
+        </div>
+        <div class="dex-col dex-zerox">
+          <div class="dex-col-head">
+            <span class="dex-badge" style="background:rgba(167,139,250,.12);color:var(--v);border-color:rgba(167,139,250,.3)">0x</span>
+            <div class="dex-col-title">0x Swap API v2</div>
+            <div class="dex-col-sub">373+ sources · 20+ EVM chains · Permit2</div>
+          </div>
+          <div class="dex-props">
+            <div class="dex-prop"><span class="dex-k">Endpoint</span><code class="dex-v">https://api.0x.org/swap/permit2/</code></div>
+            <div class="dex-prop"><span class="dex-k">Auth</span><code class="dex-v">0x-api-key header (0x.org dashboard)</code></div>
+            <div class="dex-prop"><span class="dex-k">Chains</span><code class="dex-v">ETH, Base, Arbitrum, Optimism +16</code></div>
+            <div class="dex-prop"><span class="dex-k">Sources</span><code class="dex-v">AMMs + professional market makers</code></div>
+            <div class="dex-prop"><span class="dex-k">SDK</span><code class="dex-v">@0x/swap-ts-sdk (npm)</code></div>
+          </div>
+        </div>
+        <div class="dex-col dex-uni">
+          <div class="dex-col-head">
+            <span class="dex-badge" style="background:rgba(249,115,22,.12);color:#f97316;border-color:rgba(249,115,22,.3)">UNI</span>
+            <div class="dex-col-title">Uniswap v4 SDK</div>
+            <div class="dex-col-sub">Universal Router · v2/v3/v4/UniswapX</div>
+          </div>
+          <div class="dex-props">
+            <div class="dex-prop"><span class="dex-k">Endpoint</span><code class="dex-v">https://trade-api.gateway.uniswap.org/</code></div>
+            <div class="dex-prop"><span class="dex-k">Auth</span><code class="dex-v">x-api-key header (developer portal)</code></div>
+            <div class="dex-prop"><span class="dex-k">Chains</span><code class="dex-v">ETH, Base, Arbitrum, Optimism, Polygon</code></div>
+            <div class="dex-prop"><span class="dex-k">Sources</span><code class="dex-v">Uniswap v2/v3/v4 + UniswapX orders</code></div>
+            <div class="dex-prop"><span class="dex-k">SDK</span><code class="dex-v">@uniswap/v4-sdk, @uniswap/sdk-core</code></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Setup code tabs -->
+      <div class="bw-section-title" style="margin-top:28px">Install &amp; Initialise</div>
+      <div class="dex-setup-grid">
+
+        <!-- 1inch -->
+        <div class="bw-code-card">
+          <div class="bw-code-header">
+            <span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span>
+            <span class="bw-code-lang">1inch — npm install + quote</span>
+          </div>
+          <pre class="bw-code"><span class="cc"># Install</span>
+<span class="cf">npm</span> install @1inch/swap-sdk ethers
+
+<span class="cc">// 1inch_swap.ts</span>
+<span class="ck">import</span> { SDK, NetworkEnum } <span class="ck">from</span> <span class="cs">'@1inch/swap-sdk'</span>;
+
+<span class="ck">const</span> sdk = <span class="ck">new</span> <span class="ct">SDK</span>({
+  url: <span class="cs">'https://api.1inch.dev/swap/v6.0'</span>,
+  authKey: <span class="cs">'YOUR_1INCH_API_KEY'</span>,
+});
+
+<span class="cc">// Get best quote: USDC → WETH on Ethereum</span>
+<span class="ck">const</span> quote = <span class="ck">await</span> sdk.swap.<span class="cf">getQuote</span>({
+  src:    <span class="cs">'0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'</span>, <span class="cc">// USDC</span>
+  dst:    <span class="cs">'0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'</span>, <span class="cc">// WETH</span>
+  amount: <span class="cs">'1000000000'</span>, <span class="cc">// 1000 USDC (6 decimals)</span>
+  from:   <span class="cs">'0xYOUR_WALLET'</span>,
+  slippage: <span class="cn">0.5</span>,
+  chainId: NetworkEnum.<span class="ct">ETHEREUM</span>,
+});
+
+console.<span class="cf">log</span>(<span class="cs">'Best route:'</span>, quote.toAmount, quote.protocols);</pre>
+        </div>
+
+        <!-- 0x -->
+        <div class="bw-code-card">
+          <div class="bw-code-header">
+            <span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span>
+            <span class="bw-code-lang">0x — npm install + price quote</span>
+          </div>
+          <pre class="bw-code"><span class="cc"># Install</span>
+<span class="cf">npm</span> install @0x/swap-ts-sdk viem
+
+<span class="cc">// zerox_swap.ts</span>
+<span class="ck">import</span> { SwapApiClient } <span class="ck">from</span> <span class="cs">'@0x/swap-ts-sdk'</span>;
+
+<span class="ck">const</span> client = <span class="ck">new</span> <span class="ct">SwapApiClient</span>({
+  apiKey: <span class="cs">'YOUR_0X_API_KEY'</span>,
+  chainId: <span class="cn">1</span>, <span class="cc">// Ethereum mainnet</span>
+});
+
+<span class="cc">// Price quote (indicative)</span>
+<span class="ck">const</span> price = <span class="ck">await</span> client.<span class="cf">getPrice</span>({
+  sellToken:   <span class="cs">'0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'</span>,
+  buyToken:    <span class="cs">'0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'</span>,
+  sellAmount:  <span class="cs">'1000000000'</span>,
+});
+
+<span class="cc">// Firm quote with Permit2 calldata</span>
+<span class="ck">const</span> quote = <span class="ck">await</span> client.<span class="cf">getQuote</span>({
+  ...price,
+  takerAddress: <span class="cs">'0xYOUR_WALLET'</span>,
+});
+console.<span class="cf">log</span>(quote.transaction.to, quote.transaction.data);</pre>
+        </div>
+
+        <!-- Uniswap v4 -->
+        <div class="bw-code-card" style="grid-column:1/-1">
+          <div class="bw-code-header">
+            <span class="bw-code-dot red"></span><span class="bw-code-dot yellow"></span><span class="bw-code-dot green"></span>
+            <span class="bw-code-lang">Uniswap v4 — npm install + Universal Router swap</span>
+          </div>
+          <pre class="bw-code"><span class="cc"># Install Uniswap v4 SDK + dependencies</span>
+<span class="cf">npm</span> install @uniswap/v4-sdk @uniswap/sdk-core @uniswap/universal-router-sdk ethers
+
+<span class="cc">// uniswap_v4_swap.ts</span>
+<span class="ck">import</span> { Token, CurrencyAmount, TradeType, Percent } <span class="ck">from</span> <span class="cs">'@uniswap/sdk-core'</span>;
+<span class="ck">import</span> { Pool, Route, Trade }                         <span class="ck">from</span> <span class="cs">'@uniswap/v4-sdk'</span>;
+<span class="ck">import</span> { UniversalRouter }                            <span class="ck">from</span> <span class="cs">'@uniswap/universal-router-sdk'</span>;
+<span class="ck">import</span> { ethers }                                     <span class="ck">from</span> <span class="cs">'ethers'</span>;
+
+<span class="ck">const</span> ETHEREUM = <span class="cn">1</span>;
+<span class="ck">const</span> USDC  = <span class="ck">new</span> <span class="ct">Token</span>(ETHEREUM, <span class="cs">'0xA0b8...'</span>, <span class="cn">6</span>,  <span class="cs">'USDC'</span>);
+<span class="ck">const</span> WETH  = <span class="ck">new</span> <span class="ct">Token</span>(ETHEREUM, <span class="cs">'0xC02a...'</span>, <span class="cn">18</span>, <span class="cs">'WETH'</span>);
+
+<span class="cc">// Fetch pool state from Uniswap v4 PoolManager</span>
+<span class="ck">const</span> pool = <span class="ck">await</span> <span class="ct">Pool</span>.<span class="cf">fromChain</span>(USDC, WETH, <span class="cn">3000</span>, provider);
+
+<span class="cc">// Build swap route</span>
+<span class="ck">const</span> route = <span class="ck">new</span> <span class="ct">Route</span>([pool], USDC, WETH);
+<span class="ck">const</span> trade = <span class="ck">await</span> <span class="ct">Trade</span>.<span class="cf">exactIn</span>(
+  <span class="ct">CurrencyAmount</span>.<span class="cf">fromRawAmount</span>(USDC, <span class="cs">'1000000000'</span>),
+  route,
+);
+
+<span class="cc">// Encode via Universal Router</span>
+<span class="ck">const</span> { calldata, value } = <span class="ct">UniversalRouter</span>.<span class="cf">swapCallParameters</span>(trade, {
+  slippageTolerance: <span class="ck">new</span> <span class="ct">Percent</span>(<span class="cn">50</span>, <span class="cn">10_000</span>), <span class="cc">// 0.5%</span>
+  deadline: Math.<span class="cf">floor</span>(Date.<span class="cf">now</span>() / <span class="cn">1000</span>) + <span class="cn">60</span> * <span class="cn">20</span>,
+  recipient: <span class="cs">'0xYOUR_WALLET'</span>,
+});
+<span class="cc">// Submit: wallet.sendTransaction({ to: UNIVERSAL_ROUTER_ADDRESS, data: calldata, value })</span></pre>
+        </div>
+      </div>
+
+      <!-- Chain support table -->
+      <div class="bw-section-title" style="margin-top:28px">Supported EVM Chains</div>
+      <div class="dex-chains">
+        <div class="dex-chain-row dex-chain-head">
+          <span>Chain</span><span>1inch</span><span>0x</span><span>Uniswap v4</span>
+        </div>
+        <div class="dex-chain-row"><span>Ethereum</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span></div>
+        <div class="dex-chain-row"><span>Base</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span></div>
+        <div class="dex-chain-row"><span>Arbitrum</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span></div>
+        <div class="dex-chain-row"><span>Optimism</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span></div>
+        <div class="dex-chain-row"><span>Polygon</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span></div>
+        <div class="dex-chain-row"><span>BSC</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span><span class="dc-no">–</span></div>
+        <div class="dex-chain-row"><span>Avalanche</span><span class="dc-yes">✓</span><span class="dc-yes">✓</span><span class="dc-no">–</span></div>
+        <div class="dex-chain-row"><span>Zksync</span><span class="dc-yes">✓</span><span class="dc-no">–</span><span class="dc-no">–</span></div>
+      </div>
+
+      <div class="pred-disclaimer" style="margin-top:16px">
+        ⚠️ Always test on a testnet before mainnet. API keys from 1inch, 0x, and Uniswap developer portals are required. Never expose private keys in client-side code.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ GAME ARENA PAGE ═══ -->
+  <div id="gamePage" class="ov-page" style="display:none">
+    <div class="ov-content">
+      <div class="ov-header">
+        <div>
+          <h1 class="ov-title">🎮 Game Arena</h1>
+          <p class="ov-sub">7 games built in — click any card to play</p>
+        </div>
+      </div>
+      <div class="ga-grid">
+
+        <a href="Cricle%20BOOM/arc-game/index.html" target="_blank" class="ga-card" style="--ga-col:#00e5ff">
+          <div class="ga-glow"></div>
+          <div class="ga-badge">ACTION</div>
+          <div class="ga-emoji">✕</div>
+          <div class="ga-name">X DODGE</div>
+          <div class="ga-desc">Dodge the incoming X's — survive as long as you can. Tap or swipe to move between lanes.</div>
+          <div class="ga-tags"><span class="ga-tag">🕹️ Arcade</span><span class="ga-tag">⚡ Fast-paced</span></div>
+          <div class="ga-play">PLAY <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        </a>
+
+        <a href="Rock%20Paper%20Scissors/index.html" target="_blank" class="ga-card" style="--ga-col:#ff4db8">
+          <div class="ga-glow"></div>
+          <div class="ga-badge">CLASSIC</div>
+          <div class="ga-emoji">🪨</div>
+          <div class="ga-name">ROCK PAPER SCISSORS</div>
+          <div class="ga-desc">Challenge the CPU in the classic hand game. Who will outsmart who? Best of many wins!</div>
+          <div class="ga-tags"><span class="ga-tag">🧠 Strategy</span><span class="ga-tag">🎲 vs CPU</span></div>
+          <div class="ga-play">PLAY <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        </a>
+
+        <a href="Snake/index.html" target="_blank" class="ga-card" style="--ga-col:#00d4ff">
+          <div class="ga-glow"></div>
+          <div class="ga-badge">RETRO</div>
+          <div class="ga-emoji">🐍</div>
+          <div class="ga-name">SNAKE</div>
+          <div class="ga-desc">Eat the fruit, grow longer, don't bite yourself. Arrow keys or swipe to slither.</div>
+          <div class="ga-tags"><span class="ga-tag">🕹️ Arcade</span><span class="ga-tag">📈 High Score</span></div>
+          <div class="ga-play">PLAY <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        </a>
+
+        <a href="Whack-a-Mole/index.html" target="_blank" class="ga-card" style="--ga-col:#fbbf24">
+          <div class="ga-glow"></div>
+          <div class="ga-badge">REFLEX</div>
+          <div class="ga-emoji">🔨</div>
+          <div class="ga-name">WHACK-A-MOLE</div>
+          <div class="ga-desc">Tap the critters before they duck away. 30 seconds — how many can you whack?</div>
+          <div class="ga-tags"><span class="ga-tag">👆 Tap</span><span class="ga-tag">⏱️ Timed</span></div>
+          <div class="ga-play">PLAY <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        </a>
+
+        <a href="Memory/index.html" target="_blank" class="ga-card" style="--ga-col:#a78bfa">
+          <div class="ga-glow"></div>
+          <div class="ga-badge">PUZZLE</div>
+          <div class="ga-emoji">🃏</div>
+          <div class="ga-name">MEMORY MATCH</div>
+          <div class="ga-desc">Flip cards and find all 8 matching pairs. Fewer moves means a better score.</div>
+          <div class="ga-tags"><span class="ga-tag">🧠 Memory</span><span class="ga-tag">🃏 Pairs</span></div>
+          <div class="ga-play">PLAY <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        </a>
+
+        <a href="Breakout/index.html" target="_blank" class="ga-card" style="--ga-col:#f97316">
+          <div class="ga-glow"></div>
+          <div class="ga-badge">ACTION</div>
+          <div class="ga-emoji">🧱</div>
+          <div class="ga-name">BREAKOUT</div>
+          <div class="ga-desc">Smash all the bricks with a bouncing ball. Don't let it fall off the bottom!</div>
+          <div class="ga-tags"><span class="ga-tag">⚡ Fast-paced</span><span class="ga-tag">🏆 Score</span></div>
+          <div class="ga-play">PLAY <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        </a>
+
+        <a href="Tic-Tac-Toe/index.html" target="_blank" class="ga-card" style="--ga-col:#34d399">
+          <div class="ga-glow"></div>
+          <div class="ga-badge">STRATEGY</div>
+          <div class="ga-emoji">⭕</div>
+          <div class="ga-name">TIC-TAC-TOE</div>
+          <div class="ga-desc">You're X, the CPU is O. First to three in a row wins. Can you beat a perfect AI?</div>
+          <div class="ga-tags"><span class="ga-tag">🧠 Strategy</span><span class="ga-tag">🤖 vs CPU</span></div>
+          <div class="ga-play">PLAY <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PREDICTLY PAGE ═══ -->
+  <div id="predictlyPage" class="ov-page" style="display:none">
+    <div class="ov-content">
+
+      <div class="ov-header">
+        <div>
+          <h1 class="ov-title">🔮 Predictly</h1>
+          <p class="ov-sub">AI-powered price predictions &amp; network sentiment for Rialo, Shelby &amp; Arc</p>
+        </div>
+        <div class="ov-updated">Refreshes every 60s · <span id="predTime">--</span></div>
+      </div>
+
+      <!-- Prediction cards row -->
+      <div class="pred-grid">
+
+        <!-- SOL / Rialo -->
+        <div class="pred-card pred-cyan">
+          <div class="pred-header">
+            <div class="pred-icon pred-icon-c">R</div>
+            <div>
+              <div class="pred-name">Rialo Network</div>
+              <div class="pred-sub">SOL · Solana-compatible</div>
+            </div>
+            <div class="pred-live-dot cyan"></div>
+          </div>
+          <div class="pred-price-row">
+            <div class="pred-price" id="predSOLprice">--</div>
+            <div class="pred-change" id="predSOLchange">--</div>
+          </div>
+          <div class="pred-bar-section">
+            <div class="pred-bar-label">
+              <span class="pred-bear">Bearish</span>
+              <span class="pred-sentiment" id="predSOLsent">Analyzing...</span>
+              <span class="pred-bull">Bullish</span>
+            </div>
+            <div class="pred-bar-track">
+              <div class="pred-bar-fill cyan-fill" id="predSOLbar" style="width:50%"></div>
+            </div>
+          </div>
+          <div class="pred-targets">
+            <div class="pred-target">
+              <span class="pred-tlbl">24h Low</span>
+              <span class="pred-tval red" id="predSOLlo">--</span>
+            </div>
+            <div class="pred-target">
+              <span class="pred-tlbl">Current</span>
+              <span class="pred-tval" id="predSOLcur">--</span>
+            </div>
+            <div class="pred-target">
+              <span class="pred-tlbl">24h High</span>
+              <span class="pred-tval green" id="predSOLhi">--</span>
+            </div>
+          </div>
+          <canvas id="predSOLchart" class="pred-chart"></canvas>
+          <div class="pred-signal" id="predSOLsig">
+            <span class="sig-dot"></span><span>Loading signal...</span>
+          </div>
+        </div>
+
+        <!-- APT / Shelby -->
+        <div class="pred-card pred-pink">
+          <div class="pred-header">
+            <div class="pred-icon pred-icon-p">S</div>
+            <div>
+              <div class="pred-name">Shelby Protocol</div>
+              <div class="pred-sub">APT · Aptos chain</div>
+            </div>
+            <div class="pred-live-dot pink"></div>
+          </div>
+          <div class="pred-price-row">
+            <div class="pred-price" id="predAPTprice">--</div>
+            <div class="pred-change" id="predAPTchange">--</div>
+          </div>
+          <div class="pred-bar-section">
+            <div class="pred-bar-label">
+              <span class="pred-bear">Bearish</span>
+              <span class="pred-sentiment" id="predAPTsent">Analyzing...</span>
+              <span class="pred-bull">Bullish</span>
+            </div>
+            <div class="pred-bar-track">
+              <div class="pred-bar-fill pink-fill" id="predAPTbar" style="width:50%"></div>
+            </div>
+          </div>
+          <div class="pred-targets">
+            <div class="pred-target">
+              <span class="pred-tlbl">24h Low</span>
+              <span class="pred-tval red" id="predAPTlo">--</span>
+            </div>
+            <div class="pred-target">
+              <span class="pred-tlbl">Current</span>
+              <span class="pred-tval" id="predAPTcur">--</span>
+            </div>
+            <div class="pred-target">
+              <span class="pred-tlbl">24h High</span>
+              <span class="pred-tval green" id="predAPThi">--</span>
+            </div>
+          </div>
+          <canvas id="predAPTchart" class="pred-chart"></canvas>
+          <div class="pred-signal" id="predAPTsig">
+            <span class="sig-dot"></span><span>Loading signal...</span>
+          </div>
+        </div>
+
+        <!-- ARC -->
+        <div class="pred-card pred-purple">
+          <div class="pred-header">
+            <div class="pred-icon pred-icon-v">A</div>
+            <div>
+              <div class="pred-name">Arc DEX</div>
+              <div class="pred-sub">ARC · Ethereum</div>
+            </div>
+            <div class="pred-live-dot purple"></div>
+          </div>
+          <div class="pred-price-row">
+            <div class="pred-price" id="predARCprice">--</div>
+            <div class="pred-change" id="predARCchange">--</div>
+          </div>
+          <div class="pred-bar-section">
+            <div class="pred-bar-label">
+              <span class="pred-bear">Bearish</span>
+              <span class="pred-sentiment" id="predARCsent">Analyzing...</span>
+              <span class="pred-bull">Bullish</span>
+            </div>
+            <div class="pred-bar-track">
+              <div class="pred-bar-fill purple-fill" id="predARCbar" style="width:50%"></div>
+            </div>
+          </div>
+          <div class="pred-targets">
+            <div class="pred-target">
+              <span class="pred-tlbl">24h Low</span>
+              <span class="pred-tval red" id="predARClo">--</span>
+            </div>
+            <div class="pred-target">
+              <span class="pred-tlbl">Current</span>
+              <span class="pred-tval" id="predARCcur">--</span>
+            </div>
+            <div class="pred-target">
+              <span class="pred-tlbl">24h High</span>
+              <span class="pred-tval green" id="predARChi">--</span>
+            </div>
+          </div>
+          <canvas id="predARCchart" class="pred-chart"></canvas>
+          <div class="pred-signal" id="predARCsig">
+            <span class="sig-dot"></span><span>Loading signal...</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Market summary -->
+      <div class="pred-summary">
+        <div class="pred-sum-title">📊 Market Snapshot</div>
+        <div class="pred-sum-grid">
+          <div class="pred-sum-item">
+            <div class="pred-sum-lbl">Overall Sentiment</div>
+            <div class="pred-sum-val" id="predOverall">--</div>
+          </div>
+          <div class="pred-sum-item">
+            <div class="pred-sum-lbl">SOL 24h Vol</div>
+            <div class="pred-sum-val" id="predSOLvol">--</div>
+          </div>
+          <div class="pred-sum-item">
+            <div class="pred-sum-lbl">APT Market Cap</div>
+            <div class="pred-sum-val" id="predAPTcap">--</div>
+          </div>
+          <div class="pred-sum-item">
+            <div class="pred-sum-lbl">ARC 24h Vol</div>
+            <div class="pred-sum-val" id="predARCvol">--</div>
+          </div>
+          <div class="pred-sum-item">
+            <div class="pred-sum-lbl">Data Source</div>
+            <div class="pred-sum-val">CoinGecko API</div>
+          </div>
+          <div class="pred-sum-item">
+            <div class="pred-sum-lbl">Prediction Model</div>
+            <div class="pred-sum-val">Momentum + RSI</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pred-disclaimer">⚠️ Predictions are algorithmic estimates based on price momentum and volatility. Not financial advice.</div>
+    </div>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>
