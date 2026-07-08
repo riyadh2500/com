@@ -1,10 +1,8 @@
 // ── Rio AI — app.js ──
-const GROQ_API_KEY = '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';
+// API keys loaded from config.js (not committed to git)
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL   = 'openai/gpt-oss-120b';
-
-const TAVILY_API_KEY = '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';
-const TAVILY_URL     = 'https://api.tavily.com/search';
+const TAVILY_URL   = 'https://api.tavily.com/search';
 const COINBASE_API   = 'https://api.coinbase.com/v2';
 
 const CRYPTO_KEYWORDS = [
