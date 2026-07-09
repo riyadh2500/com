@@ -4,10 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Web3 Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+
+<!-- ── Navbar ── -->
 <nav class="navbar">
   <div class="nav-left">
     <div class="logo-box">
@@ -36,32 +38,111 @@
     <button class="ntab">Rio AI</button>
     <button class="ntab">Game Arena</button>
     <button class="ntab">Predictly</button>
-    <button class="ntab">Rialo Agents</button>
   </div>
-  <div class="nav-right">
-  </div>
+  <div class="nav-right"></div>
 </nav>
 
-<div class="scene">
-  <canvas id="bgCanvas"></canvas>
-  <div class="pgdots left-pg"><span class="pgd"></span><span class="pgd on"></span><span class="pgd"></span></div>
-  <div class="pgdots right-pg"><span class="pgd"></span><span class="pgd on"></span><span class="pgd"></span></div>
+<!-- ── Dashboard Tab: scrollable (diagram + agents) ── -->
+<div id="dashboardScroll" class="dashboard-scroll">
 
-  <div id="overviewPage" class="ov-page ov-iframe-page" style="display:none">
-    <iframe id="rioAiFrame" src="http://localhost:8080/index.html" class="rio-iframe" frameborder="0" allow="clipboard-write" title="Rio AI"></iframe>
+  <!-- Section 1: Network diagram -->
+  <div class="diagram-section">
+    <canvas id="bgCanvas"></canvas>
+    <div class="pgdots left-pg"><span class="pgd"></span><span class="pgd on"></span><span class="pgd"></span></div>
+    <div class="pgdots right-pg"><span class="pgd"></span><span class="pgd on"></span><span class="pgd"></span></div>
+    <div class="scroll-hint">
+      <span>Scroll for Agent Performance</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
   </div>
 
-  <div id="gamePage" class="ov-page ov-iframe-page" style="display:none">
-    <iframe id="gameArenaFrame" src="https://game-arina-two.vercel.app/" class="rio-iframe" frameborder="0" allow="clipboard-write; fullscreen" title="Game Arena"></iframe>
+  <!-- Section 2: Rialo Agents -->
+  <div class="agents-section">
+    <div class="ra-topbar">
+      <span class="ra-title">Agent performance</span>
+      <div class="ra-topbar-right">
+        <div class="ra-topbar-item"><span class="ra-live-dot"></span>Network live</div>
+        <div class="ra-divider"></div>
+        <div class="ra-topbar-item ra-mono">Epoch <span id="raEpoch">184,203</span></div>
+        <div class="ra-divider"></div>
+        <div class="ra-topbar-item ra-mono">Updated <span id="raUpdated">--:--:--</span> UTC</div>
+      </div>
+    </div>
+    <div class="ra-body">
+      <div class="ra-card" style="margin-bottom:20px">
+        <div class="ra-card-label">Network throughput</div>
+        <canvas id="raTicker" height="50"></canvas>
+      </div>
+      <div class="ra-stats-grid">
+        <div class="ra-stat-card"><div class="ra-stat-label">Active agents</div><div class="ra-stat-val"><span class="ra-mono">12</span><span class="ra-delta ra-up">▲ 1.0%</span></div></div>
+        <div class="ra-stat-card"><div class="ra-stat-label">Total volume</div><div class="ra-stat-val"><span id="raTotalVol" class="ra-mono">--</span><span class="ra-delta ra-up">▲ 4.8%</span></div></div>
+        <div class="ra-stat-card"><div class="ra-stat-label">Avg success rate</div><div class="ra-stat-val"><span id="raAvgSuccess" class="ra-mono">--</span><span class="ra-delta ra-up">▲ 0.4%</span></div></div>
+        <div class="ra-stat-card"><div class="ra-stat-label">Avg execution speed</div><div class="ra-stat-val"><span id="raAvgSpeed" class="ra-mono">--</span><span class="ra-delta ra-down">▼ 6.2%</span></div></div>
+      </div>
+      <div class="ra-lb-header">
+        <span class="ra-lb-title">Agent leaderboard</span>
+        <div class="ra-lb-controls">
+          <div class="ra-search">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7383" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="raSearch" class="ra-search-input ra-mono" type="text" placeholder="Search agents…"/>
+            <button id="raSearchClear" class="ra-search-clear" style="display:none">✕</button>
+          </div>
+          <div class="ra-cats" id="raCats"></div>
+          <div class="ra-range">
+            <button class="ra-range-btn active">24h</button>
+            <button class="ra-range-btn">7d</button>
+            <button class="ra-range-btn">30d</button>
+          </div>
+        </div>
+      </div>
+      <div class="ra-table-wrap">
+        <table class="ra-table">
+          <thead><tr>
+            <th class="ra-rank-col">#</th>
+            <th>Agent</th>
+            <th class="ra-num ra-sort" data-key="volume">Volume <span class="ra-sort-arr" id="raS-volume">▼</span></th>
+            <th class="ra-num ra-sort" data-key="success">Success rate <span class="ra-sort-arr" id="raS-success"></span></th>
+            <th class="ra-num ra-sort" data-key="speed">Avg speed <span class="ra-sort-arr" id="raS-speed"></span></th>
+            <th class="ra-num ra-sort ra-cost-col" data-key="cost">Avg cost <span class="ra-sort-arr" id="raS-cost"></span></th>
+            <th class="ra-num ra-trend-col">Trend</th>
+          </tr></thead>
+          <tbody id="raTableBody"></tbody>
+        </table>
+      </div>
+      <div class="ra-about">
+        <div class="ra-section-title">About this dashboard</div>
+        <div class="ra-about-grid">
+          <div class="ra-card">
+            <div class="ra-card-label">The concept</div>
+            <p class="ra-about-text">Rialo's reactive transaction model lets autonomous agents execute financial logic directly on-chain — market making, rebalancing, liquidation, settlement — instead of relying on fragile off-chain bots. This gives builders a public, real-time view of how agents actually perform.</p>
+          </div>
+          <div class="ra-card">
+            <div class="ra-card-label">How it works</div>
+            <div id="raHowItWorks"></div>
+          </div>
+        </div>
+        <div class="ra-card-label" style="margin:24px 0 12px">What the numbers mean</div>
+        <div class="ra-glossary-grid" id="raGlossary"></div>
+        <div class="ra-card-label" style="margin:24px 0 12px">Who it's for</div>
+        <div class="ra-glossary-grid" id="raAudience"></div>
+        <div class="ra-card-label" style="margin:24px 0 4px">FAQ</div>
+        <div class="ra-faq-wrap" id="raFaq"></div>
+        <div class="ra-footer">Mock data for prototyping · connect the Rialo indexer to go live.</div>
+      </div>
+    </div>
   </div>
 
-  <div id="predictlyPage" class="ov-page ov-iframe-page" style="display:none">
-    <iframe id="predictlyFrame" src="https://predictly-seven.vercel.app/" class="rio-iframe" frameborder="0" allow="clipboard-write" title="Predictly"></iframe>
-  </div>
+</div><!-- /dashboardScroll -->
 
-  <div id="rialoAgentsPage" class="ov-page ov-iframe-page" style="display:none">
-    <iframe id="rialoAgentsFrame" src="http://localhost:5175/" class="rio-iframe" frameborder="0" allow="clipboard-write" title="Rialo Agents"></iframe>
-  </div>
+<!-- ── Other tab pages (fixed, full screen) ── -->
+<div id="overviewPage" class="ov-page" style="display:none">
+  <iframe src="http://localhost:8080/index.html" class="rio-iframe" frameborder="0" allow="clipboard-write" title="Rio AI"></iframe>
+</div>
+<div id="gamePage" class="ov-page" style="display:none">
+  <iframe src="https://game-arina-two.vercel.app/" class="rio-iframe" frameborder="0" allow="clipboard-write;fullscreen" title="Game Arena"></iframe>
+</div>
+<div id="predictlyPage" class="ov-page" style="display:none">
+  <iframe src="https://predictly-seven.vercel.app/" class="rio-iframe" frameborder="0" allow="clipboard-write" title="Predictly"></iframe>
 </div>
 
 <script src="app.js"></script>

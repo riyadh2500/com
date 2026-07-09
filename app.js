@@ -211,7 +211,9 @@ const ED=[
   {a:2,b:4,col:'#ff4db8',  bend:-0.12},  // shelby → arc diagonal
 ];
 
-function resizeBg(){BW=bgC.parentElement.offsetWidth;BH=bgC.parentElement.offsetHeight;
+function resizeBg(){
+  var parent=bgC.parentElement;
+  BW=parent.offsetWidth;BH=parent.offsetHeight;
   bgC.width=BW*dpr;bgC.height=BH*dpr;bgX.scale(dpr,dpr)}
 function cn(){return ND.map(n=>({...n,x:n.rx*BW,y:n.ry*BH}))}
 
@@ -509,74 +511,323 @@ window.addEventListener('resize',()=>{resizeBg();nodes=cn();drawSpark();
   const c=document.getElementById('volChart');if(c){c.width=0;c.height=0}drawVol()});
 
 /* ═══════════════════════════════════════════
-   TAB SWITCHING — Dashboard ↔ Overview
+   TAB SWITCHING
 ═══════════════════════════════════════════ */
-
-// Global hideAll — accessible by all tab functions
 function hideAll(){
-  var bg=document.getElementById('bgCanvas');
-  if(bg)bg.style.display='none';
-  var scene=document.querySelector('.scene');
-  if(scene)Array.from(scene.children).forEach(function(ch){
-    if(ch.id!=='bgCanvas')ch.style.display='none';
-  });
-  ['overviewPage','buildPage','gamePage','predictlyPage','rialoAgentsPage'].forEach(function(id){
+  var ds=document.getElementById('dashboardScroll');
+  if(ds)ds.classList.add('hidden');
+  ['overviewPage','gamePage','predictlyPage'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
 }
 
 function initTabs(){
   var tabs=document.querySelectorAll('.ntab');
-  var scene=document.querySelector('.scene');
-
-  function showDashboard(){
-    var bg=document.getElementById('bgCanvas');
-    if(bg)bg.style.display='block';
-    Array.from(scene.children).forEach(function(ch){
-      if(ch.id!=='bgCanvas')ch.style.display='block';
-    });
-    ['overviewPage','buildPage','gamePage','predictlyPage'].forEach(function(id){
-      var el=document.getElementById(id);if(el)el.style.display='none';
-    });
-  }
-  function showOverview(){
-    hideAll();
-    var ov=document.getElementById('overviewPage');
-    if(ov) ov.style.display='block';
-  }
-  function showBuild(){
-    hideAll();
-    var bp=document.getElementById('buildPage');
-    if(bp){
-      bp.style.display='block';
-      var bh=document.getElementById('blockHeight');
-      set('bwBlock',bh?bh.textContent:'--');
+  var pages=[
+    function(){// Dashboard
+      ['overviewPage','gamePage','predictlyPage'].forEach(function(id){
+        var el=document.getElementById(id);if(el)el.style.display='none';
+      });
+      var ds=document.getElementById('dashboardScroll');
+      if(ds)ds.classList.remove('hidden');
+    },
+    function(){// Rio AI
+      hideAll();
+      var el=document.getElementById('overviewPage');
+      if(el)el.style.display='block';
+    },
+    function(){// Game Arena
+      hideAll();
+      var el=document.getElementById('gamePage');
+      if(el)el.style.display='block';
+    },
+    function(){// Predictly
+      hideAll();
+      var el=document.getElementById('predictlyPage');
+      if(el)el.style.display='block';
     }
-  }
-  function showGame(){
-    hideAll();
-    var gp=document.getElementById('gamePage');
-    if(gp)gp.style.display='block';
-  }
-  function showPredictly(){
-    hideAll();
-    var pp=document.getElementById('predictlyPage');
-    if(pp)pp.style.display='block';
-  }
-  function showRialoAgents(){
-    hideAll();
-    var ra=document.getElementById('rialoAgentsPage');
-    if(ra)ra.style.display='block';
-  }
-  var pages=[showDashboard,showOverview,showGame,showPredictly,showRialoAgents];
+  ];
   tabs.forEach(function(tab,idx){
     tab.addEventListener('click',function(){
       tabs.forEach(function(t){t.classList.remove('active');});
       tab.classList.add('active');
-      pages[idx]();
+      if(pages[idx])pages[idx]();
     });
   });
 }
+
+/* ═══════════════════════════════════════════
+   RIALO AGENT DASHBOARD — vanilla JS engine
+═══════════════════════════════════════════ */
+(function(){
+  var AGENT_NAMES=['Meridian Yield Router','Ferrous Arb Bot','Glasswing Settler',
+    'Nightloom Rebalancer','Coldwater Liquidator','Sunspur Market Maker',
+    'Basalt Credit Agent','Driftwood Hedger','Cinder Prediction Agent',
+    'Vaultkeep Automator','Ashgrove RWA Agent','Hollow Point Sniper'];
+  var CATS=['DeFi','RWA','Prediction','Credit','MEV'];
+  var CAT_COL={DeFi:'#4C7EF3',RWA:'#7C8CA6',Prediction:'#C9974C',Credit:'#8B6FC9',MEV:'#B25F45'};
+  var HOW=[
+    {title:'Pull',text:"Agent activity is read directly from Rialo's on-chain indexer every few seconds."},
+    {title:'Compute',text:'Each transaction is marked success or fail, timed, and priced, then rolled up per agent.'},
+    {title:'Display',text:'The leaderboard updates live, ranked by whichever metric is currently sorted.'},
+    {title:'Verify',text:'Every figure traces back to on-chain data — nothing here is self-reported by agents.'}
+  ];
+  var GLOSSARY=[
+    {term:'Volume',def:'Total transactions the agent has executed in the selected time window.'},
+    {term:'Success rate',def:'Share of transactions that completed without failing or reverting.'},
+    {term:'Avg speed',def:'Average time from trigger to on-chain confirmation.'},
+    {term:'Avg cost',def:'Average stake-for-service fee paid per transaction, in the network\'s base asset.'}
+  ];
+  var AUDIENCE=[
+    {term:'Depositors',def:'Compare agents before delegating funds, on a real track record instead of a claim.'},
+    {term:'Builders',def:'See which automation patterns are actually working on Rialo before designing around them.'},
+    {term:'Agent developers',def:'A public benchmark to measure your own agent against, and a reason to keep it efficient.'}
+  ];
+  var FAQ=[
+    {q:'Is this official Rialo data?',a:"It reads from the same public indexer anyone can query — this dashboard itself isn't an official Rialo product."},
+    {q:'How often does it update?',a:'Every few seconds, on a continuous poll. Nothing here is a periodic snapshot.'},
+    {q:'Can any agent show up here?',a:"Yes. There's no whitelist or application — any agent transacting on Rialo appears automatically."}
+  ];
+
+  function seeded(seed){var s=seed;return function(){s=(s*9301+49297)%233280;return s/233280;};}
+  function makeAgent(i){
+    var r=seeded(i*7919+13);
+    var suc=88+r()*11,spd=0.4+r()*2.2,cst=0.002+r()*.02,vol=Math.round(800+r()*12000);
+    var hist=[];for(var h=0;h<24;h++)hist.push({t:h,volume:Math.round(vol/24*(0.6+r()*.8)),success:Math.min(100,suc+(r()-.5)*6)});
+    return{id:'a'+i,name:AGENT_NAMES[i%AGENT_NAMES.length],cat:CATS[i%CATS.length],success:suc,speed:spd,cost:cst,volume:vol,history:hist,_r:r};
+  }
+  function jitter(a){
+    var r=a._r;
+    var suc=Math.min(100,Math.max(70,a.success+(r()-.5)*.8));
+    var spd=Math.max(0.1,a.speed+(r()-.5)*.08);
+    var cst=Math.max(0.0005,a.cost+(r()-.5)*.0006);
+    var vol=Math.max(0,Math.round(a.volume+(r()-.45)*40));
+    var hist=a.history.slice(1).concat({t:a.history[a.history.length-1].t+1,volume:Math.round(vol/24*(0.6+r()*.8)),success:suc});
+    return Object.assign({},a,{success:suc,speed:spd,cost:cst,volume:vol,history:hist});
+  }
+
+  var fmtN=function(n){return new Intl.NumberFormat('en-US').format(Math.round(n));};
+  var fmtP=function(n){return n.toFixed(1)+'%';};
+  var fmtS=function(n){return n.toFixed(2)+'s';};
+  var fmtC=function(n){return '$'+n.toFixed(4);};
+  var fmtT=function(d){return d.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});};
+
+  var agents=[];for(var i=0;i<12;i++)agents.push(makeAgent(i));
+  var sortKey='volume',sortDir='desc',searchQ='',activeCats=new Set(CATS),expandedId=null,epoch=184203;
+  var netHist=[];for(var j=0;j<40;j++)netHist.push({v:62000+Math.sin(j/3)*4000});
+  var faqOpen=null;
+
+  // Build static sections once
+  function buildStatic(){
+    // Category filters
+    var catsEl=document.getElementById('raCats');
+    if(catsEl){
+      catsEl.innerHTML='';
+      CATS.forEach(function(c){
+        var btn=document.createElement('button');
+        btn.className='ra-cat-btn on';btn.dataset.cat=c;
+        btn.innerHTML='<span class="ra-cat-dot" style="background:'+CAT_COL[c]+'"></span>'+c;
+        btn.addEventListener('click',function(){
+          if(activeCats.has(c))activeCats.delete(c); else activeCats.add(c);
+          if(activeCats.size===0)CATS.forEach(function(x){activeCats.add(x);});
+          btn.classList.toggle('on',activeCats.has(c));
+          btn.querySelector('.ra-cat-dot').style.opacity=activeCats.has(c)?'1':'0.35';
+          renderTable();
+        });
+        catsEl.appendChild(btn);
+      });
+    }
+    // Range buttons
+    document.querySelectorAll('.ra-range-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        document.querySelectorAll('.ra-range-btn').forEach(function(b){b.classList.remove('active');});
+        btn.classList.add('active');
+      });
+    });
+    // Sort headers
+    document.querySelectorAll('.ra-sort').forEach(function(th){
+      th.addEventListener('click',function(){
+        var key=th.dataset.key;
+        if(sortKey===key)sortDir=sortDir==='desc'?'asc':'desc'; else{sortKey=key;sortDir='desc';}
+        ['volume','success','speed','cost'].forEach(function(k){
+          var el=document.getElementById('raS-'+k);
+          if(el)el.textContent=k===sortKey?(sortDir==='desc'?'▼':'▲'):'';
+        });
+        renderTable();
+      });
+    });
+    // Search
+    var si=document.getElementById('raSearch'),sc=document.getElementById('raSearchClear');
+    if(si){si.addEventListener('input',function(){searchQ=si.value;sc.style.display=searchQ?'':'none';renderTable();});}
+    if(sc){sc.addEventListener('click',function(){si.value='';searchQ='';sc.style.display='none';renderTable();});}
+    // How it works
+    var hw=document.getElementById('raHowItWorks');
+    if(hw){hw.innerHTML=HOW.map(function(s,i){return'<div class="ra-step"><div class="ra-step-num">'+(i+1)+'</div><div><div class="ra-step-title">'+s.title+'</div><div class="ra-step-text">'+s.text+'</div></div></div>';}).join('');}
+    // Glossary
+    var gl=document.getElementById('raGlossary');
+    if(gl){gl.innerHTML=GLOSSARY.map(function(g){return'<div class="ra-gloss-card"><div class="ra-gloss-term">'+g.term+'</div><div class="ra-gloss-def">'+g.def+'</div></div>';}).join('');}
+    // Audience
+    var au=document.getElementById('raAudience');
+    if(au){au.innerHTML=AUDIENCE.map(function(g){return'<div class="ra-gloss-card"><div class="ra-gloss-term">'+g.term+'</div><div class="ra-gloss-def">'+g.def+'</div></div>';}).join('');}
+    // FAQ
+    var fq=document.getElementById('raFaq');
+    if(fq){
+      fq.innerHTML=FAQ.map(function(f,i){return'<div class="ra-faq-item"><button class="ra-faq-q" data-i="'+i+'">'+f.q+'<span class="ra-faq-icon">+</span></button><div class="ra-faq-a" style="display:none">'+f.a+'</div></div>';}).join('');
+      fq.querySelectorAll('.ra-faq-q').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var idx=parseInt(btn.dataset.i);
+          var ans=btn.nextElementSibling;
+          var icon=btn.querySelector('.ra-faq-icon');
+          if(faqOpen===idx){ans.style.display='none';icon.style.transform='none';faqOpen=null;}
+          else{
+            fq.querySelectorAll('.ra-faq-a').forEach(function(a){a.style.display='none';});
+            fq.querySelectorAll('.ra-faq-icon').forEach(function(ic){ic.style.transform='none';});
+            ans.style.display='block';icon.style.transform='rotate(45deg)';faqOpen=idx;
+          }
+        });
+      });
+    }
+  }
+
+  // Draw throughput sparkline on canvas
+  function drawTicker(){
+    var c=document.getElementById('raTicker');if(!c)return;
+    var W=c.parentElement.offsetWidth-32,H=50;
+    c.width=W*window.devicePixelRatio;c.height=H*window.devicePixelRatio;
+    c.style.width=W+'px';c.style.height=H+'px';
+    var ctx=c.getContext('2d');ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+    ctx.clearRect(0,0,W,H);
+    var vals=netHist.map(function(d){return d.v;});
+    var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
+    var pts=vals.map(function(v,i){return{x:(i/(vals.length-1))*W,y:H-2-((v-mn)/rng)*(H-8)};});
+    var gr=ctx.createLinearGradient(0,0,0,H);
+    gr.addColorStop(0,'rgba(76,126,243,.25)');gr.addColorStop(1,'rgba(76,126,243,0)');
+    ctx.beginPath();pts.forEach(function(p,i){i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);});
+    ctx.lineTo(pts[pts.length-1].x,H);ctx.lineTo(0,H);ctx.closePath();
+    ctx.fillStyle=gr;ctx.fill();
+    ctx.beginPath();pts.forEach(function(p,i){i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);});
+    ctx.strokeStyle='#4C7EF3';ctx.lineWidth=1.5;ctx.stroke();
+  }
+
+  // Draw mini sparkline for table rows
+  function drawSparkCanvas(canvas,data,color){
+    var W=100,H=30;
+    canvas.width=W*window.devicePixelRatio;canvas.height=H*window.devicePixelRatio;
+    canvas.style.width=W+'px';canvas.style.height=H+'px';
+    var ctx=canvas.getContext('2d');ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+    ctx.clearRect(0,0,W,H);
+    var vals=data.map(function(d){return d.volume;});
+    var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
+    var pts=vals.map(function(v,i){return{x:(i/(vals.length-1))*W,y:H-2-((v-mn)/rng)*(H-4)};});
+    ctx.beginPath();pts.forEach(function(p,i){i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);});
+    ctx.strokeStyle=color||'#5B6472';ctx.lineWidth=1.25;ctx.stroke();
+  }
+
+  // Draw expanded area chart
+  function drawAreaCanvas(canvas,data,key,color){
+    var W=canvas.parentElement.offsetWidth-4,H=140;
+    canvas.width=W*window.devicePixelRatio;canvas.height=H*window.devicePixelRatio;
+    canvas.style.width=W+'px';canvas.style.height=H+'px';
+    var ctx=canvas.getContext('2d');ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
+    ctx.clearRect(0,0,W,H);
+    var vals=data.map(function(d){return d[key];});
+    var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
+    var pts=vals.map(function(v,i){return{x:(i/(vals.length-1))*W,y:H-4-((v-mn)/rng)*(H-12)};});
+    var gr=ctx.createLinearGradient(0,0,0,H);
+    gr.addColorStop(0,color.replace(')',',0.3)').replace('rgb','rgba'));
+    gr.addColorStop(1,color.replace(')',',0)').replace('rgb','rgba'));
+    ctx.beginPath();pts.forEach(function(p,i){i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);});
+    ctx.lineTo(pts[pts.length-1].x,H);ctx.lineTo(0,H);ctx.closePath();
+    ctx.fillStyle=gr;ctx.fill();
+    ctx.beginPath();pts.forEach(function(p,i){i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);});
+    ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.stroke();
+  }
+
+  function getFiltered(){
+    var q=searchQ.trim().toLowerCase();
+    var copy=agents.slice().sort(function(a,b){
+      return sortDir==='desc'?b[sortKey]-a[sortKey]:a[sortKey]-b[sortKey];
+    });
+    return copy.filter(function(a){return activeCats.has(a.cat)&&(!q||a.name.toLowerCase().includes(q));});
+  }
+
+  function renderTable(){
+    var tbody=document.getElementById('raTableBody');if(!tbody)return;
+    var list=getFiltered();
+    if(list.length===0){tbody.innerHTML='<tr><td colspan="7" style="padding:36px 20px;text-align:center;color:#6B7383;font-size:13px">No agents match the current filters.</td></tr>';return;}
+    tbody.innerHTML='';
+    list.forEach(function(a,i){
+      // Main row
+      var tr=document.createElement('tr');
+      var rankHtml=i<3?'<span class="ra-rank-badge ra-rank-'+(i+1)+'">'+(i+1)+'</span>':'<span class="ra-rank-n">'+(i+1)+'</span>';
+      tr.innerHTML='<td class="ra-rank-col ra-mono">'+rankHtml+'</td>'+
+        '<td><div style="display:flex;align-items:center"><span class="ra-cat-dot" style="background:'+CAT_COL[a.cat]+'"></span><div><div class="ra-agent-name">'+a.name+'</div><div class="ra-agent-cat">'+a.cat+'</div></div></div></td>'+
+        '<td class="ra-num">'+fmtN(a.volume)+'</td>'+
+        '<td class="ra-num" style="color:'+(a.success>95?'#22A06B':'#E8EAED')+'">'+fmtP(a.success)+'</td>'+
+        '<td class="ra-num">'+fmtS(a.speed)+'</td>'+
+        '<td class="ra-num ra-cost-col">'+fmtC(a.cost)+'</td>'+
+        '<td class="ra-num ra-trend-col"><canvas class="ra-spark-canvas"></canvas></td>';
+      // Draw sparkline
+      tr.querySelector('.ra-spark-canvas') && setTimeout(function(row,agent){
+        var c=row.querySelector('.ra-spark-canvas');if(c)drawSparkCanvas(c,agent.history,CAT_COL[agent.cat]);
+      }.bind(null,tr,a),0);
+      // Expand toggle
+      tr.addEventListener('click',function(){
+        expandedId=expandedId===a.id?null:a.id;renderTable();
+        if(expandedId===a.id){var row=tbody.querySelector('[data-expand="'+a.id+'"]');if(row)row.scrollIntoView({block:'nearest'});}
+      });
+      tbody.appendChild(tr);
+      // Expanded row
+      if(expandedId===a.id){
+        var expTr=document.createElement('tr');
+        expTr.dataset.expand=a.id;
+        expTr.className='ra-expand-row';
+        expTr.innerHTML='<td colspan="7"><div class="ra-expand-grid">'+
+          '<div><div class="ra-expand-label">Volume, last 24h</div><canvas id="exp-vol-'+a.id+'"></canvas></div>'+
+          '<div><div class="ra-expand-label">Success rate, last 24h</div><canvas id="exp-suc-'+a.id+'"></canvas></div>'+
+          '</div></td>';
+        tbody.appendChild(expTr);
+        setTimeout(function(agent){
+          var vc=document.getElementById('exp-vol-'+agent.id);
+          var sc=document.getElementById('exp-suc-'+agent.id);
+          if(vc)drawAreaCanvas(vc,agent.history,'volume','#4C7EF3');
+          if(sc)drawAreaCanvas(sc,agent.history,'success','#22A06B');
+        }.bind(null,a),0);
+      }
+    });
+  }
+
+  function updateStats(){
+    var tot=agents.reduce(function(s,a){return s+a.volume;},0);
+    var suc=agents.reduce(function(s,a){return s+a.success;},0)/agents.length;
+    var spd=agents.reduce(function(s,a){return s+a.speed;},0)/agents.length;
+    var el;
+    el=document.getElementById('raTotalVol');if(el)el.textContent=fmtN(tot);
+    el=document.getElementById('raAvgSuccess');if(el)el.textContent=fmtP(suc);
+    el=document.getElementById('raAvgSpeed');if(el)el.textContent=fmtS(spd);
+    el=document.getElementById('raEpoch');if(el)el.textContent=fmtN(epoch);
+    el=document.getElementById('raUpdated');if(el)el.textContent=fmtT(new Date());
+  }
+
+  function tick(){
+    agents=agents.map(jitter);
+    var sum=agents.reduce(function(s,a){return s+a.volume;},0);
+    netHist=netHist.slice(1).concat({v:sum});
+    epoch++;
+    drawTicker();
+    updateStats();
+    renderTable();
+  }
+
+  // Init after DOM ready
+  window.addEventListener('load',function(){
+    buildStatic();
+    updateStats();
+    drawTicker();
+    renderTable();
+    setInterval(tick,3000);
+  });
+})();
 
 /* ═══════════════════════════════════════════
    PREDICTLY — price predictions + mini charts
