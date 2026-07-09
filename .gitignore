@@ -2,12 +2,14 @@
 node_modules/
 package-lock.json
 
-# Environment variables
+# Environment variables & API Keys
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+config.js
+Rio.ai/config.js
 
 # Build outputs
 dist/
