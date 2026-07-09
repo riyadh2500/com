@@ -12,8 +12,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
   justify-content:space-between;padding:0 20px;background:rgba(10,12,20,.96);
   backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);z-index:100}
 .nav-left{display:flex;align-items:center;gap:10px}
-.logo-box{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-  background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);border-radius:8px}
+.logo-box{width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px}
 .brand{font-size:14px;font-weight:600}
 .nav-tabs{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:2px;
   background:rgba(14,18,32,.9);border:1px solid var(--bdr);border-radius:10px;padding:3px}
@@ -847,3 +847,178 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
   border: none;
   display: block;
 }
+
+/* ═══════════════════════════════════════════
+   RIALO INFO PANEL
+═══════════════════════════════════════════ */
+.rialo-info-panel{
+  position:absolute;top:80px;left:50%;transform:translateX(-50%);
+  width:680px;max-width:calc(100% - 40px);
+  background:rgba(13,16,28,.95);
+  border:1px solid rgba(0,229,255,.2);
+  border-radius:20px;padding:24px 28px;
+  backdrop-filter:blur(24px);
+  box-shadow:0 0 60px rgba(0,229,255,.12);
+  z-index:35;
+  animation:fadeUp .6s cubic-bezier(.16,1,.3,1) both;
+}
+
+.rialo-header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:20px;padding-bottom:18px;
+  border-bottom:1px solid rgba(0,229,255,.15);
+}
+
+.rialo-logo-circle{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(0,229,255,.1));
+  border:2px solid rgba(0,229,255,.4);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:800;
+  color:var(--c);
+  box-shadow:0 0 20px rgba(0,229,255,.3);
+}
+
+.rialo-header h3{
+  font-size:18px;font-weight:700;
+  color:var(--t1);margin:0;
+  letter-spacing:-.01em;
+}
+
+.rialo-subtitle{
+  display:block;font-size:11px;
+  color:var(--t2);margin-top:4px;
+}
+
+.rialo-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-bottom:20px;
+}
+
+.rialo-stat{
+  background:rgba(18,22,38,.9);
+  border:1px solid rgba(0,229,255,.12);
+  border-radius:12px;padding:12px 14px;
+  text-align:center;
+}
+
+.rialo-stat .stat-label{
+  display:block;font-size:9px;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:var(--t2);margin-bottom:5px;
+}
+
+.rialo-stat .stat-value{
+  display:block;font-size:15px;font-weight:700;
+  color:var(--t1);font-variant-numeric:tabular-nums;
+}
+
+.rialo-stat .stat-value.live{
+  color:var(--c);text-shadow:0 0 12px rgba(0,229,255,.6);
+  animation:blink 2s ease-in-out infinite;
+}
+
+.rialo-features{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin-bottom:20px;
+}
+
+.feature-item{
+  display:flex;gap:12px;align-items:flex-start;
+  background:rgba(18,22,38,.8);
+  border:1px solid rgba(0,229,255,.08);
+  border-radius:10px;padding:12px 14px;
+  transition:all .25s;
+}
+
+.feature-item:hover{
+  border-color:rgba(0,229,255,.25);
+  background:rgba(18,22,38,.95);
+  transform:translateY(-1px);
+}
+
+.feature-icon{
+  font-size:20px;line-height:1;
+  flex-shrink:0;margin-top:2px;
+}
+
+.feature-title{
+  font-size:12px;font-weight:700;
+  color:var(--t1);margin-bottom:3px;
+}
+
+.feature-desc{
+  font-size:10px;color:var(--t2);
+  line-height:1.5;
+}
+
+.rialo-links{
+  display:flex;gap:10px;
+  padding-top:16px;
+  border-top:1px solid rgba(0,229,255,.1);
+}
+
+.rialo-link{
+  flex:1;display:flex;align-items:center;
+  justify-content:center;gap:6px;
+  padding:10px 16px;
+  background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(0,229,255,.05));
+  border:1px solid rgba(0,229,255,.3);
+  border-radius:10px;
+  font-size:12px;font-weight:600;
+  color:var(--c);text-decoration:none;
+  transition:all .25s;
+}
+
+.rialo-link:hover{
+  background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(0,229,255,.12));
+  border-color:rgba(0,229,255,.5);
+  box-shadow:0 0 24px rgba(0,229,255,.25);
+  transform:translateY(-2px);
+}
+
+/* Hide Rialo panel when other pages are active */
+#overviewPage:not([style*="display: none"]) ~ .rialo-info-panel,
+#gamePage:not([style*="display: none"]) ~ .rialo-info-panel,
+#predictlyPage:not([style*="display: none"]) ~ .rialo-info-panel{
+  display:none;
+}
+
+
+/* Overview iframe pages */
+.ov-page{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;display:none}
+.ov-iframe-page{background:var(--bg)}
+.rio-iframe{width:100%;height:100%;border:none;display:block}
+
+/* Flash animations */
+@keyframes flash-up{0%{opacity:1;transform:scale(1)}50%{opacity:1;color:#00e5ff;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes flash-down{0%{opacity:1;transform:scale(1)}50%{opacity:1;color:#ff4db8;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+.flash-up{animation:flash-up .5s ease-out}
+.flash-down{animation:flash-down .5s ease-out}
+
+/* Page dots */
+.pgdots{position:fixed;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:50;opacity:.4}
+.pgdots.left-pg{left:18px}
+.pgdots.right-pg{right:18px}
+.pgd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s}
+.pgd.on{width:6px;height:18px;border-radius:3px;background:linear-gradient(135deg,var(--c),var(--p))}
+
+/* Donut chart */
+#donut{display:block;margin:8px auto}
+
+/* Volume chart */
+#volChart{display:block;width:100%;height:68px;margin-top:8px}
+
+/* Wallet button */
+#walletBtn{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;
+  background:rgba(18,22,38,.9);border:1px solid rgba(0,229,255,.25);border-radius:10px;
+  color:var(--c);font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;margin-top:12px}
+#walletBtn:hover{border-color:rgba(0,229,255,.5);box-shadow:0 0 20px rgba(0,229,255,.25)}
+
+/* Additional metric boxes */
+.vol-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.vol-item{background:rgba(18,22,38,.9);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center}
+.vol-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);margin-bottom:4px}
+.vol-val{font-size:13px;font-weight:600;color:var(--t1)}
+.vol-change{font-size:11px;margin-top:2px;font-weight:600}

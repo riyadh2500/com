@@ -520,7 +520,7 @@ function hideAll(){
   if(scene)Array.from(scene.children).forEach(function(ch){
     if(ch.id!=='bgCanvas')ch.style.display='none';
   });
-  ['overviewPage','buildPage','gamePage','predictlyPage'].forEach(function(id){
+  ['overviewPage','buildPage','gamePage','predictlyPage','rialoAgentsPage'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
 }
@@ -555,12 +555,20 @@ function initTabs(){
   }
   function showGame(){
     hideAll();
-    window.open('https://game-arina-two.vercel.app/','_blank');
-    tabs.forEach(function(t){t.classList.remove('active');});
-    tabs[0].classList.add('active');
-    showDashboard();
+    var gp=document.getElementById('gamePage');
+    if(gp)gp.style.display='block';
   }
-  var pages=[showDashboard,showOverview,showBuild,showGame,showPredictly];
+  function showPredictly(){
+    hideAll();
+    var pp=document.getElementById('predictlyPage');
+    if(pp)pp.style.display='block';
+  }
+  function showRialoAgents(){
+    hideAll();
+    var ra=document.getElementById('rialoAgentsPage');
+    if(ra)ra.style.display='block';
+  }
+  var pages=[showDashboard,showOverview,showGame,showPredictly,showRialoAgents];
   tabs.forEach(function(tab,idx){
     tab.addEventListener('click',function(){
       tabs.forEach(function(t){t.classList.remove('active');});
@@ -702,20 +710,4 @@ function syncOverviewData(){
   set('ovEURC',document.getElementById('priceEURC')?document.getElementById('priceEURC').textContent:'--');
 }
 
-function showPredictly(){
-  hideAll();
-  window.open('https://predictly-seven.vercel.app/','_blank');
-  var tabs=document.querySelectorAll('.ntab');
-  tabs.forEach(function(t){t.classList.remove('active');});
-  tabs[0].classList.add('active');
-  // return to dashboard
-  var bg=document.getElementById('bgCanvas');
-  if(bg)bg.style.display='block';
-  var scene=document.querySelector('.scene');
-  if(scene)Array.from(scene.children).forEach(function(ch){
-    if(ch.id!=='bgCanvas')ch.style.display='block';
-  });
-  ['overviewPage','buildPage','gamePage','predictlyPage'].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.style.display='none';
-  });
-}
+

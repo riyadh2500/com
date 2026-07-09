@@ -66,6 +66,70 @@ export const CHAINS = {
     avgBlockTime: 1,
     confirmations: 1,
   },
+
+  // ── TESTNETS ──
+  sepolia: {
+    id: 11155111,
+    name: 'Sepolia',
+    shortName: 'sepolia',
+    rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
+    fallbackRpc: 'https://rpc.sepolia.org',
+    explorerUrl: 'https://sepolia.etherscan.io',
+    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+    color: '#627eea',
+    dotClass: 'eth',
+    icon: '⟠',
+    routers: {
+      uniswapV3: '0xE592427A0AEce92De3Edee1F18E0157C05861564',
+      swapRouter02: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
+    },
+    gasMultiplier: 1.2,
+    avgBlockTime: 12,
+    confirmations: 1,
+    isTestnet: true,
+  },
+
+  'base-sepolia': {
+    id: 84532,
+    name: 'Base Sepolia',
+    shortName: 'base-sepolia',
+    rpcUrl: 'https://sepolia.base.org',
+    fallbackRpc: 'https://base-sepolia-rpc.publicnode.com',
+    explorerUrl: 'https://sepolia.basescan.org',
+    nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+    color: '#0052ff',
+    dotClass: 'base',
+    icon: '🔵',
+    routers: {
+      uniswapV3: '0x94cC0AaC535CCDB3C01d6787D6413C739ae12bc4',
+      swapRouter02: '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
+    },
+    gasMultiplier: 1.1,
+    avgBlockTime: 2,
+    confirmations: 1,
+    isTestnet: true,
+  },
+
+  'arc-testnet': {
+    id: 12345, // Placeholder - replace with actual Arc testnet chain ID
+    name: 'Arc Testnet',
+    shortName: 'arc-testnet',
+    rpcUrl: 'https://rpc.testnet.arc.network',
+    fallbackRpc: 'https://rpc.testnet.arc.network',
+    explorerUrl: 'https://testnet-explorer.arc.network',
+    nativeCurrency: { name: 'Test Arc', symbol: 'ARC', decimals: 18 },
+    color: '#34d399',
+    dotClass: 'arc',
+    icon: '🌐',
+    routers: {
+      // Arc testnet may not have standard routers - will use simulated swaps
+      custom: '0x0000000000000000000000000000000000000000',
+    },
+    gasMultiplier: 1.05,
+    avgBlockTime: 1,
+    confirmations: 1,
+    isTestnet: true,
+  },
 };
 
 // Chain ID → key lookup

@@ -120,6 +120,110 @@ export const TOKENS = [
     color: 'linear-gradient(135deg,#f7931a,#ffb74d)',
     coingeckoId: 'wrapped-bitcoin', logoText: 'WBTC',
   },
+
+  // ── TESTNETS ──
+
+  // Sepolia Testnet
+  {
+    symbol: 'ETH', name: 'Sepolia Ether', decimals: 18,
+    chain: 'sepolia', address: 'NATIVE',
+    color: 'linear-gradient(135deg,#627eea,#a78bfa)',
+    coingeckoId: 'ethereum', logoText: 'ETH',
+  },
+  {
+    symbol: 'WETH', name: 'Wrapped Ether', decimals: 18,
+    chain: 'sepolia', address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14',
+    color: 'linear-gradient(135deg,#627eea,#a78bfa)',
+    coingeckoId: 'weth', logoText: 'WETH',
+  },
+  {
+    symbol: 'USDC', name: 'USD Coin', decimals: 6,
+    chain: 'sepolia', address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+    color: 'linear-gradient(135deg,#2775ca,#5bb4f5)',
+    coingeckoId: 'usd-coin', logoText: 'USDC',
+  },
+  {
+    symbol: 'USDT', name: 'Tether USD', decimals: 6,
+    chain: 'sepolia', address: '0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0',
+    color: 'linear-gradient(135deg,#26a17b,#4ecba3)',
+    coingeckoId: 'tether', logoText: 'USDT',
+  },
+  {
+    symbol: 'DAI', name: 'Dai Stablecoin', decimals: 18,
+    chain: 'sepolia', address: '0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6',
+    color: 'linear-gradient(135deg,#f5ac37,#ffd166)',
+    coingeckoId: 'dai', logoText: 'DAI',
+  },
+  {
+    symbol: 'EURC', name: 'Euro Coin', decimals: 6,
+    chain: 'sepolia', address: '0x08210F9170F89Ab7658F0B5E3fF39b0E03C594D4',
+    color: 'linear-gradient(135deg,#003399,#0066cc)',
+    coingeckoId: 'euro-coin', logoText: 'EURC',
+  },
+
+  // Base Sepolia Testnet
+  {
+    symbol: 'ETH', name: 'Base Sepolia Ether', decimals: 18,
+    chain: 'base-sepolia', address: 'NATIVE',
+    color: 'linear-gradient(135deg,#0052ff,#4d88ff)',
+    coingeckoId: 'ethereum', logoText: 'ETH',
+  },
+  {
+    symbol: 'WETH', name: 'Wrapped Ether', decimals: 18,
+    chain: 'base-sepolia', address: '0x4200000000000000000000000000000000000006',
+    color: 'linear-gradient(135deg,#627eea,#a78bfa)',
+    coingeckoId: 'weth', logoText: 'WETH',
+  },
+  {
+    symbol: 'USDC', name: 'USD Coin', decimals: 6,
+    chain: 'base-sepolia', address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+    color: 'linear-gradient(135deg,#2775ca,#5bb4f5)',
+    coingeckoId: 'usd-coin', logoText: 'USDC',
+  },
+  {
+    symbol: 'USDT', name: 'Tether USD', decimals: 6,
+    chain: 'base-sepolia', address: '0xf305d719089a9AA9eC50e0e1Fc5d94c0c3F62b6e',
+    color: 'linear-gradient(135deg,#26a17b,#4ecba3)',
+    coingeckoId: 'tether', logoText: 'USDT',
+  },
+  {
+    symbol: 'DAI', name: 'Dai Stablecoin', decimals: 18,
+    chain: 'base-sepolia', address: '0x7683022d84F726a96c4A6611cD31DBf5409c0Ac9',
+    color: 'linear-gradient(135deg,#f5ac37,#ffd166)',
+    coingeckoId: 'dai', logoText: 'DAI',
+  },
+  {
+    symbol: 'EURC', name: 'Euro Coin', decimals: 6,
+    chain: 'base-sepolia', address: '0xC8D3a11a27D3F2F35F83A2f8143F1234567890AB',
+    color: 'linear-gradient(135deg,#003399,#0066cc)',
+    coingeckoId: 'euro-coin', logoText: 'EURC',
+  },
+
+  // Arc Testnet
+  {
+    symbol: 'ARC', name: 'Test Arc Token', decimals: 18,
+    chain: 'arc-testnet', address: 'NATIVE',
+    color: 'linear-gradient(135deg,#34d399,#059669)',
+    coingeckoId: 'arc-token', logoText: 'ARC',
+  },
+  {
+    symbol: 'USDC', name: 'USD Coin (Test)', decimals: 6,
+    chain: 'arc-testnet', address: '0x0000000000000000000000000000000000000001',
+    color: 'linear-gradient(135deg,#2775ca,#5bb4f5)',
+    coingeckoId: 'usd-coin', logoText: 'USDC',
+  },
+  {
+    symbol: 'USDT', name: 'Tether USD (Test)', decimals: 6,
+    chain: 'arc-testnet', address: '0x0000000000000000000000000000000000000002',
+    color: 'linear-gradient(135deg,#26a17b,#4ecba3)',
+    coingeckoId: 'tether', logoText: 'USDT',
+  },
+  {
+    symbol: 'EURC', name: 'Euro Coin (Test)', decimals: 6,
+    chain: 'arc-testnet', address: '0x0000000000000000000000000000000000000003',
+    color: 'linear-gradient(135deg,#003399,#0066cc)',
+    coingeckoId: 'euro-coin', logoText: 'EURC',
+  },
 ];
 
 // ── Lookups ──

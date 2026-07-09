@@ -70,8 +70,8 @@ body::before {
   width: 32px; height: 32px;
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(244,114,182,0.2));
-  border: 1px solid rgba(167,139,250,0.3);
+  background: transparent;
+  border: none;
 }
 .logo-icon.small { width: 28px; height: 28px; border-radius: 7px; }
 
@@ -456,8 +456,8 @@ body::before {
 .welcome-icon {
   width: 56px; height: 56px;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(244,114,182,0.15));
-  border: 1px solid rgba(167,139,250,0.25);
+  background: transparent;
+  border: none;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 4px;
 }
@@ -1068,3 +1068,66 @@ body::before {
   background: #a78bfa; flex-shrink: 0;
 }
 .app-toast.error .toast-dot { background: #f87171; }
+
+/* ── Sidebar sign in button ── */
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sidebar-signin-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(167,139,250,.4);
+  background: rgba(167,139,250,.12);
+  color: #a78bfa;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  white-space: nowrap;
+}
+
+.sidebar-signin-btn:hover {
+  background: rgba(167,139,250,.22);
+  border-color: rgba(167,139,250,.7);
+}
+
+.sidebar-signin-btn.hidden {
+  display: none;
+}
+
+/* ── Image attach preview ── */
+.img-preview-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+
+.img-preview-thumb {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.img-remove-btn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color .2s;
+}
+
+.img-remove-btn:hover { color: #f87171; }
