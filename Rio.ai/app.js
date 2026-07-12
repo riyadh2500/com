@@ -1,7 +1,7 @@
 // ── Rio AI — app.js ──
 // API keys from config.js (not committed to git)
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL   = 'openai/gpt-oss-120b';
+const GROQ_MODEL   = 'llama-3.3-70b-versatile';
 const TAVILY_URL   = 'https://api.tavily.com/search';
 const COINBASE_API = 'https://api.coinbase.com/v2';
 
