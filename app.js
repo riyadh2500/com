@@ -191,24 +191,24 @@ let BW,BH,nodes,gT=0,wT=0;
 
 // Node positions — compact, fits between the three cards
 const ND=[
-  {key:'top',   rx:.50, ry:.10, col:'#00d4ff', sz:16, url:null},
-  {key:'rialo', rx:.30, ry:.26, col:'#00e5ff', sz:44, url:'https://rialo-doc-ajmul.vercel.app/'},
-  {key:'shelby',rx:.70, ry:.26, col:'#ff4db8', sz:44, url:'https://shelby-network-tracker-ajmul.vercel.app/'},
-  {key:'mid',   rx:.50, ry:.40, col:'#00b8cc', sz:18, url:null},
-  {key:'arc',   rx:.50, ry:.60, col:'#7c6fff', sz:52, url:'https://arc-rust-five.vercel.app/swap'},
+  {key:'top',    rx:.50, ry:.10, col:'#00d4ff', sz:16,  url:null},
+  {key:'rialo',  rx:.30, ry:.28, col:'#00e5ff', sz:44,  url:'https://rialo-doc-ajmul.vercel.app/'},
+  {key:'riodex', rx:.70, ry:.28, col:'#f97316', sz:44,  url:'https://rio-dex.vercel.app/swap'},
+  {key:'mid',    rx:.50, ry:.44, col:'#00b8cc', sz:18,  url:null},
+  {key:'arc',    rx:.50, ry:.62, col:'#7c6fff', sz:52,  url:'https://arc-rust-five.vercel.app/swap'},
 ];
 
-// Edges: straight + curved (bend != 0 means quadratic bezier)
+// Edges
 const ED=[
   {a:0,b:1,col:'#00e5ff',  bend:0},      // top → rialo
-  {a:0,b:2,col:'#ff4db8',  bend:0},      // top → shelby
+  {a:0,b:2,col:'#f97316',  bend:0},      // top → riodex
   {a:1,b:3,col:'#00e5ff',  bend:0},      // rialo → mid
-  {a:2,b:3,col:'#ff4db8',  bend:0},      // shelby → mid
+  {a:2,b:3,col:'#f97316',  bend:0},      // riodex → mid
   {a:3,b:4,col:'#7c6fff',  bend:0},      // mid → arc
-  {a:1,b:2,col:'#00e5ff',  bend:-0.28},  // rialo ↔ shelby curved up
-  {a:1,b:2,col:'#ff4db8',  bend: 0.28},  // rialo ↔ shelby curved down (cross)
+  {a:1,b:2,col:'#00e5ff',  bend:-0.28},  // rialo ↔ riodex curved up
+  {a:1,b:2,col:'#f97316',  bend: 0.28},  // rialo ↔ riodex curved down
   {a:1,b:4,col:'#00e5ff',  bend: 0.12},  // rialo → arc diagonal
-  {a:2,b:4,col:'#ff4db8',  bend:-0.12},  // shelby → arc diagonal
+  {a:2,b:4,col:'#f97316',  bend:-0.12},  // riodex → arc diagonal
 ];
 
 function resizeBg(){
@@ -369,21 +369,6 @@ function drawNode(n){
     // Diagonal leg
     bgX.beginPath();bgX.moveTo(lx+is*.35,mid);bgX.lineTo(rx,by);bgX.stroke();
   }
-  else if(key==='shelby'){
-    /* "S" letterform — two opposing arcs */
-    const r=is*.62;
-    const ty=y-is*.82,by=y+is*.82,my=y;
-    const lx=x-is*.45,rx=x+is*.45;
-
-    bgX.beginPath();
-    // Top arc: curves right to left
-    bgX.moveTo(rx,ty+r*.4);
-    bgX.bezierCurveTo(rx,ty,          lx,ty,         lx,ty+r*.5);
-    bgX.bezierCurveTo(lx,my*.98+y*.02, rx,my*.98+y*.02, rx,my+r*.08);
-    // Bottom arc: mirrors
-    bgX.bezierCurveTo(rx,by,          lx,by,         lx,by-r*.4);
-    bgX.stroke();
-  }
   else if(key==='arc'){
     /* "A" letterform — bold, clean */
     const ty=y-is*.9,by=y+is*.85;
@@ -396,6 +381,22 @@ function drawNode(n){
     bgX.beginPath();bgX.moveTo(x,ty);bgX.lineTo(rx,by);bgX.stroke();
     // Crossbar
     bgX.beginPath();bgX.moveTo(lx+is*.32,barY);bgX.lineTo(rx-is*.32,barY);bgX.stroke();
+  }
+  else if(key==='riodex'){
+    /* "R" letterform for Rio DEX — orange */
+    const lx=x-is*.42,rx2=x+is*.45;
+    const ty=y-is*.85,by=y+is*.85,mid=y-is*.05;
+    // Vertical stem
+    bgX.beginPath();bgX.moveTo(lx,ty);bgX.lineTo(lx,by);bgX.stroke();
+    // Top bump (D-shape)
+    bgX.beginPath();
+    bgX.moveTo(lx,ty);bgX.lineTo(lx+is*.15,ty);
+    bgX.bezierCurveTo(rx2+is*.1,ty,rx2+is*.1,mid,lx+is*.15,mid);
+    bgX.lineTo(lx,mid);bgX.stroke();
+    // Middle bar
+    bgX.beginPath();bgX.moveTo(lx,mid);bgX.lineTo(lx+is*.4,mid);bgX.stroke();
+    // Diagonal leg
+    bgX.beginPath();bgX.moveTo(lx+is*.35,mid);bgX.lineTo(rx2,by);bgX.stroke();
   }
 
   bgX.restore();
@@ -463,7 +464,8 @@ class Snake{
 }
 
 function drawLabels(){bgX.font='500 11px Inter,system-ui,sans-serif';bgX.textAlign='center';
-  [1,2,4].forEach(i=>{const n=nodes[i],lbl=['Rialo Network','Shelby Protocol','Arc DEX'][i===1?0:i===2?1:2];
+  [{i:1,lbl:'Rialo Network'},{i:2,lbl:'Rio DEX'},{i:4,lbl:'Arc DEX'}].forEach(({i,lbl})=>{
+    const n=nodes[i];if(!n)return;
     bgX.fillStyle='rgba(160,175,210,.75)';bgX.shadowColor=n.col;bgX.shadowBlur=5;
     bgX.fillText(lbl,n.x,n.y+n.sz*1.12+16);bgX.shadowBlur=0})}
 
