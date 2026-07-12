@@ -726,8 +726,14 @@ function initTabs(){
   }
 
   // Draw expanded area chart
+  function hexToRgba(hex,alpha){
+    var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+','+alpha+')';
+  }
+
   function drawAreaCanvas(canvas,data,key,color){
     var W=canvas.parentElement.offsetWidth-4,H=140;
+    if(W<=0)W=300;
     canvas.width=W*window.devicePixelRatio;canvas.height=H*window.devicePixelRatio;
     canvas.style.width=W+'px';canvas.style.height=H+'px';
     var ctx=canvas.getContext('2d');ctx.scale(window.devicePixelRatio,window.devicePixelRatio);
@@ -736,8 +742,8 @@ function initTabs(){
     var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
     var pts=vals.map(function(v,i){return{x:(i/(vals.length-1))*W,y:H-4-((v-mn)/rng)*(H-12)};});
     var gr=ctx.createLinearGradient(0,0,0,H);
-    gr.addColorStop(0,color.replace(')',',0.3)').replace('rgb','rgba'));
-    gr.addColorStop(1,color.replace(')',',0)').replace('rgb','rgba'));
+    gr.addColorStop(0,hexToRgba(color,0.3));
+    gr.addColorStop(1,hexToRgba(color,0));
     ctx.beginPath();pts.forEach(function(p,i){i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);});
     ctx.lineTo(pts[pts.length-1].x,H);ctx.lineTo(0,H);ctx.closePath();
     ctx.fillStyle=gr;ctx.fill();
@@ -822,12 +828,17 @@ function initTabs(){
   }
 
   // Init after DOM ready
-  window.addEventListener('load',function(){
+  document.addEventListener('DOMContentLoaded',function(){
     buildStatic();
     updateStats();
-    drawTicker();
+    setTimeout(function(){drawTicker();},100);
     renderTable();
     setInterval(tick,3000);
+  });
+  // Also try on window load as fallback
+  window.addEventListener('load',function(){
+    drawTicker();
+    if(!document.getElementById('raTableBody').hasChildNodes())renderTable();
   });
 })();
 
