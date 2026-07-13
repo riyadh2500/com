@@ -536,12 +536,7 @@ function initTabs(){
     function(){// Rio AI
       hideAll();
       var el=document.getElementById('overviewPage');
-      if(el){
-        el.style.display='block';
-        // force fresh load every time to avoid cache
-        var iframe=document.getElementById('rioAiFrame');
-        if(iframe)iframe.src='http://localhost:8080/index.html?t='+Date.now();
-      }
+      if(el) el.style.display='block';
     },
     function(){// Game Arena
       hideAll();
