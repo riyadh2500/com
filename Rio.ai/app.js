@@ -358,19 +358,20 @@ function showTyping() {
 }
 
 function formatMessage(text) {
+  if(!window._codeStore) window._codeStore = {};
   let html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_,lang,code) => {
-    const escaped = code.trim();
-    const ext = {'js':'js','javascript':'js','html':'html','css':'css','python':'py','py':'py','ts':'ts','typescript':'ts','json':'json','jsx':'jsx','tsx':'tsx','bash':'sh','sh':'sh','sql':'sql'}[lang.toLowerCase()]||'txt';
-    const id = 'cb'+ Math.random().toString(36).slice(2,8);
-    // Store raw code in a data attribute for download (base64 encoded to preserve all chars)
-    const raw = btoa(unescape(encodeURIComponent(code.trim())));
+    const raw = code.trim();
+    const escaped = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const ext = {'js':'js','javascript':'js','html':'html','css':'css','python':'py','py':'py','ts':'ts','typescript':'ts','json':'json','jsx':'jsx','tsx':'tsx','bash':'sh','sh':'sh','sql':'sql'}[(lang||'').toLowerCase()]||'txt';
+    const id = 'cb'+ Math.random().toString(36).slice(2,10);
+    window._codeStore[id] = {code: raw, ext: ext};
     return `<div class="code-block-wrap">
       <div class="code-block-header">
         <span class="code-lang">${lang||'code'}</span>
         <div class="code-actions">
-          <button class="code-btn" onclick="(function(btn){var el=document.getElementById('${id}');var txt=el.innerText||el.textContent;navigator.clipboard.writeText(txt).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1500)});})(this)">Copy</button>
-          <button class="code-btn code-dl-btn" onclick="(function(){var raw=decodeURIComponent(escape(atob('${raw}')));var blob=new Blob([raw],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='code.${ext}';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);})()">⬇ Download</button>
+          <button class="code-btn" onclick="(function(btn){navigator.clipboard.writeText(window._codeStore['${id}'].code).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1500)});})(this)">Copy</button>
+          <button class="code-btn code-dl-btn" onclick="downloadCode('${id}')">⬇ Download</button>
         </div>
       </div>
       <pre><code id="${id}" class="language-${lang||'text'}">${escaped}</code></pre>
@@ -386,6 +387,20 @@ function formatMessage(text) {
   html = html.replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
   html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
   return html.split('\n\n').map(block => block.startsWith('<') ? block : `<p>${block.replace(/\n/g,'<br>')}</p>`).join('');
+}
+
+function downloadCode(id) {
+  var store = window._codeStore && window._codeStore[id];
+  if (!store) return;
+  var blob = new Blob([store.code], {type: 'text/plain'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'code.' + store.ext;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
 }
 
 function scrollToBottom(el) { el.scrollTop = el.scrollHeight; }
