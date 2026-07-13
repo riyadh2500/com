@@ -536,7 +536,12 @@ function initTabs(){
     function(){// Rio AI
       hideAll();
       var el=document.getElementById('overviewPage');
-      if(el)el.style.display='block';
+      if(el){
+        el.style.display='block';
+        // force fresh load every time to avoid cache
+        var iframe=document.getElementById('rioAiFrame');
+        if(iframe)iframe.src='http://localhost:8080/index.html?t='+Date.now();
+      }
     },
     function(){// Game Arena
       hideAll();
@@ -824,7 +829,33 @@ function initTabs(){
     epoch++;
     drawTicker();
     updateStats();
-    renderTable();
+    // Update table cells in-place to avoid blink — only full re-render on sort/filter change
+    updateTableInPlace();
+  }
+
+  function updateTableInPlace(){
+    var tbody=document.getElementById('raTableBody');if(!tbody)return;
+    var list=getFiltered();
+    var rows=tbody.querySelectorAll('tr:not(.ra-expand-row)');
+    // If row count changed (filter/sort), do full render
+    if(rows.length!==list.length){renderTable();return;}
+    rows.forEach(function(tr,i){
+      var a=list[i];if(!a)return;
+      var cells=tr.querySelectorAll('td');
+      if(!cells[2])return;
+      // volume
+      cells[2].textContent=fmtN(a.volume);
+      // success rate
+      cells[3].textContent=fmtP(a.success);
+      cells[3].style.color=a.success>95?'#22A06B':'#E8EAED';
+      // speed
+      cells[4].textContent=fmtS(a.speed);
+      // cost
+      if(cells[5])cells[5].textContent=fmtC(a.cost);
+      // sparkline
+      var spark=tr.querySelector('.ra-spark-canvas');
+      if(spark)drawSparkCanvas(spark,a.history,CAT_COL[a.cat]);
+    });
   }
 
   // Init after DOM ready
