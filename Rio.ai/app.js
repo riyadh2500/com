@@ -213,17 +213,6 @@ async function callGroqWithSearch(history) {
   const lastText = history[history.length - 1]?.content || '';
   const needsCrypto = CRYPTO_KEYWORDS.some(k => lastText.toLowerCase().includes(k));
 
-  const bubble = document.querySelector('.typing-bubble');
-  if (bubble) {
-    bubble.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;color:#a78bfa">
-        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <span style="font-size:.8rem;color:#a1a1aa;margin-left:6px">
-        ${needsCrypto ? 'Fetching live crypto data...' : 'Searching the web...'}
-      </span>`;
-  }
 
   const [webResults, cryptoData] = await Promise.all([
     tavilySearch(lastText),
