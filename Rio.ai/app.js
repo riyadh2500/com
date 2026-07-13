@@ -1,11 +1,8 @@
 // ── Rio AI — app.js ──
-// API — Featherless AI backend
-const CHAT_API_URL_DIRECT = 'https://api.featherless.ai/v1/chat/completions';
+// API — Featherless AI via Latch proxy (no API key exposed in browser)
+const CHAT_API_URL_DIRECT = 'https://onlatch.com/connect/lnk_12809ee650d34ce6/chat/completions';
 const CHAT_MODEL = 'zai-org/GLM-5.2';
-const CHAT_API_KEY = 'rc_6aa423367241c2fabba42e6b8ff42565f01b581915b95ae1c6e8b23aa9ba2b38';
-const CHAT_API_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:3001/api/chat'
-  : 'https://rio-ai-api.onrender.com/api/chat';
+const CHAT_API_KEY = '';
 const TAVILY_URL   = 'https://api.tavily.com/search';
 const COINBASE_API = 'https://api.coinbase.com/v2';
 
@@ -232,8 +229,7 @@ async function callGroqWithSearch(history) {
   const res = await fetch(CHAT_API_URL_DIRECT, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${CHAT_API_KEY}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       model: CHAT_MODEL,
