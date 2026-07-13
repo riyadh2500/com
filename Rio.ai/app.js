@@ -3,6 +3,10 @@
 const CHAT_API_URL_DIRECT = 'https://api.featherless.ai/v1/chat/completions';
 const CHAT_MODEL = 'zai-org/GLM-5.2';
 const CHAT_API_KEY = 'rc_6aa423367241c2fabba42e6b8ff42565f01b581915b95ae1c6e8b23aa9ba2b38';
+
+// Tavily optional - only used if config.js provides TAVILY_API_KEY
+if (typeof TAVILY_API_KEY === 'undefined') { var TAVILY_API_KEY = ''; }
+if (typeof GROQ_API_KEY === 'undefined') { var GROQ_API_KEY = ''; }
 const TAVILY_URL   = 'https://api.tavily.com/search';
 const COINBASE_API = 'https://api.coinbase.com/v2';
 
@@ -249,7 +253,8 @@ async function callGroqWithSearch(history) {
 }
 
 async function tavilySearch(query) {
-  if (!TAVILY_API_KEY || TAVILY_API_KEY.includes('REPLACE')) return null;
+  // Tavily search disabled if no API key
+  if (typeof TAVILY_API_KEY === 'undefined' || !TAVILY_API_KEY || TAVILY_API_KEY.includes('REPLACE')) return null;
   try {
     const res = await fetch(TAVILY_URL, {
       method: 'POST',
