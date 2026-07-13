@@ -363,12 +363,14 @@ function formatMessage(text) {
     const escaped = code.trim();
     const ext = {'js':'js','javascript':'js','html':'html','css':'css','python':'py','py':'py','ts':'ts','typescript':'ts','json':'json','jsx':'jsx','tsx':'tsx','bash':'sh','sh':'sh','sql':'sql'}[lang.toLowerCase()]||'txt';
     const id = 'cb'+ Math.random().toString(36).slice(2,8);
+    // Store raw code in a data attribute for download (base64 encoded to preserve all chars)
+    const raw = btoa(unescape(encodeURIComponent(code.trim())));
     return `<div class="code-block-wrap">
       <div class="code-block-header">
         <span class="code-lang">${lang||'code'}</span>
         <div class="code-actions">
-          <button class="code-btn" onclick="(function(){navigator.clipboard.writeText(document.getElementById('${id}').innerText);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)}).call(this)">Copy</button>
-          <button class="code-btn code-dl-btn" onclick="(function(){var blob=new Blob([document.getElementById('${id}').innerText],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='code.${ext}';a.click()})()">⬇ Download</button>
+          <button class="code-btn" onclick="(function(btn){var el=document.getElementById('${id}');var txt=el.innerText||el.textContent;navigator.clipboard.writeText(txt).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1500)});})(this)">Copy</button>
+          <button class="code-btn code-dl-btn" onclick="(function(){var raw=decodeURIComponent(escape(atob('${raw}')));var blob=new Blob([raw],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='code.${ext}';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);})()">⬇ Download</button>
         </div>
       </div>
       <pre><code id="${id}" class="language-${lang||'text'}">${escaped}</code></pre>
