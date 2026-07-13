@@ -41,9 +41,37 @@ app.post('/api/swap', swapHandler);
 
 // ── Testnet Swap (Uniswap V3) ──
 // POST /api/quote-testnet
-// Body: { fromToken, toToken, amount, chainId }
-// Returns: { toAmount, route, priceImpact }
 app.post('/api/quote-testnet', quoteTestnetHandler);
+
+// ── Rio AI Chat ──
+// POST /api/chat
+// Body: { messages: [{role, content}] }
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { messages } = req.body;
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'messages array required' });
+    }
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages,
+        max_tokens: 2048,
+        temperature: 0.7
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) return res.status(response.status).json({ error: data?.error?.message || 'Groq error' });
+    res.json({ content: data.choices?.[0]?.message?.content || '' });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 // ── Error handler ──
 app.use((err, req, res, next) => {

@@ -1,7 +1,11 @@
 // ── Rio AI — app.js ──
-// API keys from config.js (not committed to git)
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL   = 'llama-3.3-70b-versatile';
+// API — Featherless AI backend
+const CHAT_API_URL_DIRECT = 'https://api.featherless.ai/v1/chat/completions';
+const CHAT_MODEL = 'zai-org/GLM-5.2';
+const CHAT_API_KEY = 'rc_6aa423367241c2fabba42e6b8ff42565f01b581915b95ae1c6e8b23aa9ba2b38';
+const CHAT_API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:3001/api/chat'
+  : 'https://rio-ai-api.onrender.com/api/chat';
 const TAVILY_URL   = 'https://api.tavily.com/search';
 const COINBASE_API = 'https://api.coinbase.com/v2';
 
@@ -236,10 +240,18 @@ async function callGroqWithSearch(history) {
     { role: 'user', content: dataBlock ? `${lastText}\n\n${dataBlock}Use the data above to answer.` : lastText }
   ];
 
-  const res = await fetch(GROQ_API_URL, {
+  const res = await fetch(CHAT_API_URL_DIRECT, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
-    body: JSON.stringify({ model: GROQ_MODEL, messages, max_tokens: 2048, temperature: 0.7 })
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${CHAT_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: CHAT_MODEL,
+      messages,
+      max_tokens: 2048,
+      temperature: 0.7
+    })
   });
 
   if (!res.ok) {
