@@ -359,7 +359,21 @@ function showTyping() {
 
 function formatMessage(text) {
   let html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_,lang,code) => `<pre><code class="language-${lang||'text'}">${code.trim()}</code></pre>`);
+  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_,lang,code) => {
+    const escaped = code.trim();
+    const ext = {'js':'js','javascript':'js','html':'html','css':'css','python':'py','py':'py','ts':'ts','typescript':'ts','json':'json','jsx':'jsx','tsx':'tsx','bash':'sh','sh':'sh','sql':'sql'}[lang.toLowerCase()]||'txt';
+    const id = 'cb'+ Math.random().toString(36).slice(2,8);
+    return `<div class="code-block-wrap">
+      <div class="code-block-header">
+        <span class="code-lang">${lang||'code'}</span>
+        <div class="code-actions">
+          <button class="code-btn" onclick="(function(){navigator.clipboard.writeText(document.getElementById('${id}').innerText);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)}).call(this)">Copy</button>
+          <button class="code-btn code-dl-btn" onclick="(function(){var blob=new Blob([document.getElementById('${id}').innerText],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='code.${ext}';a.click()})()">⬇ Download</button>
+        </div>
+      </div>
+      <pre><code id="${id}" class="language-${lang||'text'}">${escaped}</code></pre>
+    </div>`;
+  });
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
