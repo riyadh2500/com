@@ -1,9 +1,13 @@
 // ── Rio AI — app.js ──
-// Groq API — browser CORS supported
+// API config — key loaded from localStorage (set via UI) or config.js
 const CHAT_API_URL_DIRECT = 'https://api.groq.com/openai/v1/chat/completions';
-const CHAT_MODEL = 'openai/gpt-oss-120b';
-const _k1 = 'gsk_U9QNH8mG5bY1Y2TTYSY', _k2 = 'VWGdyb3FYVaSNh2g4DfHTIBNCOtdD7kwP';
-const CHAT_API_KEY = _k1 + _k2;
+const CHAT_MODEL = 'llama-3.3-70b-versatile';
+// Try localStorage first, then config.js key, then empty
+function getApiKey() {
+  return localStorage.getItem('rio_groq_key') ||
+    (typeof GROQ_API_KEY !== 'undefined' && GROQ_API_KEY ? GROQ_API_KEY : '') ||
+    (typeof _k1 !== 'undefined' ? _k1 + _k2 : '');
+}
 
 // Tavily optional - only used if config.js provides TAVILY_API_KEY
 if (typeof TAVILY_API_KEY === 'undefined') { var TAVILY_API_KEY = ''; }
@@ -219,7 +223,13 @@ async function sendChatMessage() {
 // ════════════════════════════════════════
 
 async function callGroqWithSearch(history) {
-  // Direct call — no Tavily/crypto pre-fetch delay
+  const CHAT_API_KEY = getApiKey();
+  if (!CHAT_API_KEY) {
+    showKeyModal();
+    throw new Error('No API key — please enter your Groq API key.');
+  }
+
+  // Direct call — no pre-fetch delay
   const messages = [
     { role: 'system', content: SYSTEM_PROMPT },
     ...history
@@ -246,7 +256,12 @@ async function callGroqWithSearch(history) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `HTTP ${res.status}`);
+    const msg = err?.error?.message || `HTTP ${res.status}`;
+    if (res.status === 401) {
+      localStorage.removeItem('rio_groq_key');
+      showKeyModal('API key invalid — please enter a valid Groq key.');
+    }
+    throw new Error(msg);
   }
   const data = await res.json();
   return data.choices?.[0]?.message?.content || 'No response received.';
@@ -562,6 +577,57 @@ function hideAuthError() { const el = $('authError'); if (el) el.style.display =
 // TOAST
 // ════════════════════════════════════════
 
+// ════════════════════════════════════════
+// API KEY MODAL
+// ════════════════════════════════════════
+
+function showKeyModal(msg) {
+  let modal = document.getElementById('keyModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'keyModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)';
+    modal.innerHTML = `
+      <div style="background:#111118;border:1px solid #2a2a3a;border-radius:20px;padding:32px;max-width:440px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.6)">
+        <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px">Enter Groq API Key</div>
+        <p style="color:#888;font-size:13px;margin-bottom:20px;line-height:1.6">
+          Get a free key at <a href="https://console.groq.com" target="_blank" style="color:#a78bfa">console.groq.com</a> — takes 30 seconds. Your key is stored locally only.
+        </p>
+        <div id="keyModalError" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:16px"></div>
+        <input id="keyModalInput" type="text" placeholder="gsk_..." autocomplete="off" style="width:100%;background:#0a0a12;border:1px solid #2a2a3a;border-radius:12px;padding:12px 16px;color:#fff;font-size:14px;font-family:monospace;outline:none;box-sizing:border-box;margin-bottom:16px"/>
+        <div style="display:flex;gap:10px">
+          <button onclick="saveApiKey()" style="flex:1;background:linear-gradient(135deg,#7c3aed,#6d28d9);border:none;border-radius:12px;padding:13px;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Save &amp; Start Chatting</button>
+          <button onclick="document.getElementById('keyModal').remove()" style="background:#1a1a2e;border:1px solid #2a2a3a;border-radius:12px;padding:13px 20px;color:#888;font-size:14px;cursor:pointer">Cancel</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    setTimeout(() => document.getElementById('keyModalInput')?.focus(), 100);
+    document.getElementById('keyModalInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') saveApiKey();
+    });
+  }
+  if (msg) {
+    const err = document.getElementById('keyModalError');
+    if (err) { err.textContent = msg; err.style.display = 'block'; }
+  }
+}
+
+function saveApiKey() {
+  const input = document.getElementById('keyModalInput');
+  const key = input?.value.trim();
+  if (!key || !key.startsWith('gsk_')) {
+    const err = document.getElementById('keyModalError');
+    if (err) { err.textContent = 'Key must start with gsk_'; err.style.display = 'block'; }
+    return;
+  }
+  localStorage.setItem('rio_groq_key', key);
+  document.getElementById('keyModal')?.remove();
+  showToast('API key saved! You can now chat.');
+  // Update label
+  const badge = document.querySelector('.model-badge');
+  if (badge) badge.innerHTML = '<span class="model-dot"></span> llama-3.3-70b · Groq';
+}
+
 function showToast(message, isError = false) {
   const toast = $('appToast');
   const text  = $('appToastText');
@@ -602,6 +668,10 @@ document.addEventListener('DOMContentLoaded', () => {
   init();
   // Auto-start chat session immediately — no hero page needed
   startNewSession();
+  // Show API key modal if no key saved
+  if (!getApiKey()) {
+    setTimeout(() => showKeyModal(), 300);
+  }
   setTimeout(() => { const ci = $('chatInput'); if (ci) ci.focus(); }, 100);
   const ci = $('chatInput');
   if (ci) ci.addEventListener('input', function() {
