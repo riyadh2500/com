@@ -550,7 +550,9 @@ function initTabs(){
       var frame=document.getElementById('predictlyFrame');
       if(frame && !frame.dataset.loaded){
         frame.dataset.loaded='1';
-        frame.src='http://localhost:3000/crypto';
+        // Local dev → use local Next.js server; deployed → use Vercel URL
+        var isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
+        frame.src=isLocal?'http://localhost:3000/crypto':'https://predictly-seven.vercel.app/';
       }
     }
   ];
