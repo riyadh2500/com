@@ -547,7 +547,6 @@ function initTabs(){
       hideAll();
       var el=document.getElementById('predictlyPage');
       if(el) el.style.display='block';
-      // Reload iframe if it was never loaded (lazy load on first tab click)
       var frame=document.getElementById('predictlyFrame');
       if(frame && !frame.dataset.loaded){
         frame.dataset.loaded='1';

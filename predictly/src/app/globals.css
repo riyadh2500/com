@@ -55,3 +55,13 @@
   .yes-bg    { @apply bg-green-500/20 text-green-400 border border-green-500/30; }
   .no-bg     { @apply bg-red-500/20 text-red-400 border border-red-500/30; }
 }
+
+/* ── Hide navbar + footer when embedded in an iframe (dashboard) ── */
+html.in-iframe nav,
+html.in-iframe footer {
+  display: none !important;
+}
+html.in-iframe main {
+  min-height: 100vh !important;
+  padding-top: 0 !important;
+}
