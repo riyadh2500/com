@@ -1,13 +1,9 @@
 // ── Rio AI — app.js ──
-// On Vercel: use /api/chat proxy → Morph API (server-side, no CORS)
-// Locally:   fall back to Groq which supports browser CORS
-const _isVercel = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
-const CHAT_API_URL_DIRECT = _isVercel
-  ? '/api/chat'
-  : 'https://api.groq.com/openai/v1/chat/completions';
-const CHAT_MODEL   = _isVercel ? 'morph-dsv4flash' : 'meta-llama/llama-4-scout-17b-16e-instruct';
-const _k1='gsk_YnrcBDgGEEQg6z6AfHDs', _k2='WGdyb3FYvJHra3KGkpSqm8a7Ys8JvjvO';
-const CHAT_API_KEY = _isVercel ? '' : (_k1+_k2); // proxy handles auth on Vercel
+// Morph API — direct browser call (CORS supported)
+const CHAT_API_URL_DIRECT = 'https://api.morphllm.com/v1/chat/completions';
+const CHAT_MODEL = 'morph-dsv4flash';
+const _m1 = 'sk-CIYHR9-_COO4ZpHsCBAO', _m2 = 'Do4q0mhZW-RXFjR8S_XDQxf0ZEVK';
+const CHAT_API_KEY = _m1 + _m2;
 
 // Tavily optional - only used if config.js provides TAVILY_API_KEY
 if (typeof TAVILY_API_KEY === 'undefined') { var TAVILY_API_KEY = ''; }
