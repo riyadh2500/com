@@ -518,7 +518,7 @@ window.addEventListener('resize',()=>{resizeBg();nodes=cn();drawSpark();
 function hideAll(){
   var ds=document.getElementById('dashboardScroll');
   if(ds)ds.classList.add('hidden');
-  ['overviewPage','gamePage','predictlyPage'].forEach(function(id){
+  ['overviewPage','gamePage'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
 }
@@ -527,7 +527,7 @@ function initTabs(){
   var tabs=document.querySelectorAll('.ntab');
   var pages=[
     function(){// Dashboard
-      ['overviewPage','gamePage','predictlyPage'].forEach(function(id){
+      ['overviewPage','gamePage'].forEach(function(id){
         var el=document.getElementById(id);if(el)el.style.display='none';
       });
       var ds=document.getElementById('dashboardScroll');
@@ -544,16 +544,14 @@ function initTabs(){
       if(el)el.style.display='block';
     },
     function(){// Predictly
-      hideAll();
-      var el=document.getElementById('predictlyPage');
-      if(el) el.style.display='block';
-      var frame=document.getElementById('predictlyFrame');
-      if(frame && !frame.dataset.loaded){
-        frame.dataset.loaded='1';
-        // Local dev → use local Next.js server; deployed → use Vercel URL
-        var isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
-        frame.src=isLocal?'http://localhost:3000/crypto':'https://predictly-seven.vercel.app/';
-      }
+      // Always open Predictly in a new tab
+      var isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
+      var url=isLocal?'http://localhost:3000/crypto':'https://predictly-seven.vercel.app/';
+      window.open(url,'_blank');
+      // Keep the dashboard on whatever tab was active (don't switch)
+      var tabs=document.querySelectorAll('.ntab');
+      tabs.forEach(function(t){t.classList.remove('active');});
+      document.querySelector('.ntab').classList.add('active');
     }
   ];
   tabs.forEach(function(tab,idx){
