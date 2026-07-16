@@ -8,8 +8,6 @@ package-lock.json
 .env.development.local
 .env.test.local
 .env.production.local
-config.js
-Rio.ai/config.js
 
 # Build outputs
 dist/

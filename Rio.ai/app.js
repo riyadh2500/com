@@ -1,8 +1,9 @@
 // ── Rio AI — app.js ──
-// API — Featherless AI direct
-const CHAT_API_URL_DIRECT = 'https://api.featherless.ai/v1/chat/completions';
-const CHAT_MODEL = 'zai-org/GLM-5.2';
-const CHAT_API_KEY = 'rc_6aa423367241c2fabba42e6b8ff42565f01b581915b95ae1c6e8b23aa9ba2b38';
+// API — Groq (browser-compatible, fast inference)
+const CHAT_API_URL_DIRECT = 'https://api.groq.com/openai/v1/chat/completions';
+const CHAT_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
+// Key loaded from config.js (gitignored) — falls back to empty
+const CHAT_API_KEY = (typeof GROQ_API_KEY !== 'undefined' && GROQ_API_KEY) ? GROQ_API_KEY : '';
 
 // Tavily optional - only used if config.js provides TAVILY_API_KEY
 if (typeof TAVILY_API_KEY === 'undefined') { var TAVILY_API_KEY = ''; }
