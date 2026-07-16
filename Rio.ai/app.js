@@ -73,15 +73,19 @@ async function sbGetSession() {
 // ════════════════════════════════════════
 
 async function dbSaveSession(id, title) {
-  const { data: { user } } = await _sb.auth.getUser();
-  if (!user) return;
-  await _sb.from('chat_sessions').upsert({ id, user_id: user.id, title });
+  try {
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) return;
+    await _sb.from('chat_sessions').upsert({ id, user_id: user.id, title });
+  } catch { /* offline or unauthenticated */ }
 }
 
 async function dbSaveMessage(sessionId, role, content) {
-  const { data: { user } } = await _sb.auth.getUser();
-  if (!user) return;
-  await _sb.from('messages').insert({ session_id: sessionId, user_id: user.id, role, content });
+  try {
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) return;
+    await _sb.from('messages').insert({ session_id: sessionId, user_id: user.id, role, content });
+  } catch { /* offline or unauthenticated */ }
 }
 
 async function dbLoadSessions() {
@@ -165,6 +169,7 @@ function handleChatKey(e) {
 
 async function sendChatMessage() {
   const input = $('chatInput');
+  if (!input) return;
   const text = input.value.trim();
   if (!text || isLoading) return;
 
@@ -172,37 +177,39 @@ async function sendChatMessage() {
   if (welcome) welcome.remove();
 
   const titleEl = $('chatTitle');
-  const isNew = titleEl.textContent === 'New conversation';
-  if (isNew) {
+  if (titleEl && titleEl.textContent === 'New conversation') {
     const title = text.length > 50 ? text.slice(0, 50) + '…' : text;
     titleEl.textContent = title;
-    addToSidebar(title, currentSessionId);
-    dbSaveSession(currentSessionId, title);
+    if (currentSessionId) {
+      addToSidebar(title, currentSessionId);
+      dbSaveSession(currentSessionId, title).catch(() => {});
+    }
   }
 
   appendMessage('user', text);
   input.value = '';
   autoResize(input);
   conversationHistory.push({ role: 'user', content: text });
-  dbSaveMessage(currentSessionId, 'user', text);
+  if (currentSessionId) dbSaveMessage(currentSessionId, 'user', text).catch(() => {});
 
   const typingEl = showTyping();
   isLoading = true;
-  $('chatSendBtn').disabled = true;
+  const sendBtn = $('chatSendBtn');
+  if (sendBtn) sendBtn.disabled = true;
 
   try {
     const reply = await callGroqWithSearch(conversationHistory);
     typingEl.remove();
     appendMessage('ai', reply);
     conversationHistory.push({ role: 'assistant', content: reply });
-    dbSaveMessage(currentSessionId, 'assistant', reply);
+    if (currentSessionId) dbSaveMessage(currentSessionId, 'assistant', reply).catch(() => {});
   } catch (err) {
     typingEl.remove();
     appendMessage('ai', `Sorry, I ran into an error: ${err.message}\n\nPlease try again.`);
     console.error('Rio AI error:', err);
   } finally {
     isLoading = false;
-    $('chatSendBtn').disabled = false;
+    if (sendBtn) sendBtn.disabled = false;
     input.focus();
   }
 }
