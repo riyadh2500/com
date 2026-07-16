@@ -593,6 +593,9 @@ async function init() {
 
 document.addEventListener('DOMContentLoaded', () => {
   init();
+  // Auto-start chat session immediately — no hero page needed
+  startNewSession();
+  setTimeout(() => { const ci = $('chatInput'); if (ci) ci.focus(); }, 100);
   const ci = $('chatInput');
   if (ci) ci.addEventListener('input', function() {
     const cc = $('charCount');
