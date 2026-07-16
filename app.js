@@ -537,6 +537,13 @@ function initTabs(){
       hideAll();
       var el=document.getElementById('overviewPage');
       if(el) el.style.display='block';
+      // Load correct Rio AI URL based on environment
+      var frame=document.getElementById('rioAiFrame');
+      if(frame && !frame.dataset.loaded){
+        frame.dataset.loaded='1';
+        var isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
+        frame.src=isLocal?'http://localhost:8000/':'https://rio-ai-0033.vercel.app/';
+      }
     },
     function(){// Game Arena
       hideAll();
