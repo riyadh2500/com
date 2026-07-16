@@ -551,7 +551,7 @@ function initTabs(){
       var frame=document.getElementById('predictlyFrame');
       if(frame && !frame.dataset.loaded){
         frame.dataset.loaded='1';
-        frame.src='http://localhost:3000';
+        frame.src='http://localhost:3000/crypto';
       }
     }
   ];

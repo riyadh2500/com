@@ -150,13 +150,13 @@
         <span style="font-size:14px;font-weight:700;color:#eeeef2;font-family:Inter,sans-serif;letter-spacing:-0.01em;">Predictly</span>
         <span id="predictlyStatus" style="font-size:11px;color:#52526a;font-family:Inter,sans-serif;">Connecting…</span>
       </div>
-      <a href="http://localhost:3000" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.3);border-radius:8px;color:#a78bfa;font-size:12px;font-weight:600;text-decoration:none;font-family:Inter,sans-serif;">
+      <a href="http://localhost:3000/crypto" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.3);border-radius:8px;color:#a78bfa;font-size:12px;font-weight:600;text-decoration:none;font-family:Inter,sans-serif;">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Open in tab
       </a>
     </div>
     <!-- iframe -->
-    <iframe id="predictlyFrame" src="http://localhost:3000" style="flex:1;width:100%;border:none;" allow="clipboard-write;fullscreen" title="Predictly"
+    <iframe id="predictlyFrame" src="http://localhost:3000/crypto" style="flex:1;width:100%;border:none;min-height:0;" allow="clipboard-write;fullscreen;ethereum" title="Predictly"
       onload="document.getElementById('predictlyStatus').textContent='Running on localhost:3000';document.getElementById('predictlyStatus').style.color='#4ade80';"
       onerror="document.getElementById('predictlyStatus').textContent='Not started — run npm run dev in combaind/predictly';">
     </iframe>

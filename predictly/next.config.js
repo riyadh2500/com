@@ -4,6 +4,19 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
 
+  // Allow embedding in an iframe from any localhost port
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options', value: 'ALLOWALL' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors *" },
+        ],
+      },
+    ];
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -14,8 +27,6 @@ const nextConfig = {
         bufferutil: false,
         'utf-8-validate': false,
       };
-
-      // Stub pino-pretty — pulled in by WalletConnect's pino logger
       config.resolve.alias = {
         ...config.resolve.alias,
         'pino-pretty': path.resolve(__dirname, 'src/lib/stubs/pino-pretty.js'),
