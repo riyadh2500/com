@@ -1,0 +1,6 @@
+node_modules/
+config.js
+swap-platform/api/.env
+swap-platform/node_modules/
+*.log
+.DS_Store

@@ -4,8 +4,7 @@
 			"path": ".."
 		},
 		{
-			"path": "../../pr"
+			"path": "../../test"
 		}
-	],
-	"settings": {}
+	]
 }
