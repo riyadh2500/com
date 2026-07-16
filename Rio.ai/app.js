@@ -212,23 +212,10 @@ async function sendChatMessage() {
 // ════════════════════════════════════════
 
 async function callGroqWithSearch(history) {
-  const lastText = history[history.length - 1]?.content || '';
-  const needsCrypto = CRYPTO_KEYWORDS.some(k => lastText.toLowerCase().includes(k));
-
-  // Run search + crypto in parallel but never let failures block the chat
-  const [webResults, cryptoData] = await Promise.all([
-    tavilySearch(lastText).catch(() => null),
-    needsCrypto ? getCryptoData(lastText).catch(() => null) : Promise.resolve(null)
-  ]);
-
-  let dataBlock = '';
-  if (cryptoData) dataBlock += `[LIVE CRYPTO DATA]\n${cryptoData}\n\n`;
-  if (webResults) dataBlock += `[WEB SEARCH RESULTS]\n${webResults}\n\n`;
-
+  // Direct call — no Tavily/crypto pre-fetch delay
   const messages = [
     { role: 'system', content: SYSTEM_PROMPT },
-    ...history.slice(0, -1),
-    { role: 'user', content: dataBlock ? `${lastText}\n\n${dataBlock}Use the data above to answer.` : lastText }
+    ...history
   ];
 
   const controller = new AbortController();
