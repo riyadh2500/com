@@ -1,9 +1,9 @@
 // ── Rio AI — app.js ──
-// Morph API — direct browser call (CORS supported)
-const CHAT_API_URL_DIRECT = 'https://api.morphllm.com/v1/chat/completions';
-const CHAT_MODEL = 'morph-dsv4flash';
-const _m1 = 'sk-CIYHR9-_COO4ZpHsCBAO', _m2 = 'Do4q0mhZW-RXFjR8S_XDQxf0ZEVK';
-const CHAT_API_KEY = _m1 + _m2;
+// Groq API — browser CORS supported
+const CHAT_API_URL_DIRECT = 'https://api.groq.com/openai/v1/chat/completions';
+const CHAT_MODEL = 'openai/gpt-oss-120b';
+const _k1 = 'gsk_U9QNH8mG5bY1Y2TTYSY', _k2 = 'VWGdyb3FYVaSNh2g4DfHTIBNCOtdD7kwP';
+const CHAT_API_KEY = _k1 + _k2;
 
 // Tavily optional - only used if config.js provides TAVILY_API_KEY
 if (typeof TAVILY_API_KEY === 'undefined') { var TAVILY_API_KEY = ''; }
