@@ -215,10 +215,10 @@ async function callGroqWithSearch(history) {
   const lastText = history[history.length - 1]?.content || '';
   const needsCrypto = CRYPTO_KEYWORDS.some(k => lastText.toLowerCase().includes(k));
 
-
+  // Run search + crypto in parallel but never let failures block the chat
   const [webResults, cryptoData] = await Promise.all([
-    tavilySearch(lastText),
-    needsCrypto ? getCryptoData(lastText) : null
+    tavilySearch(lastText).catch(() => null),
+    needsCrypto ? getCryptoData(lastText).catch(() => null) : Promise.resolve(null)
   ]);
 
   let dataBlock = '';
@@ -231,8 +231,12 @@ async function callGroqWithSearch(history) {
     { role: 'user', content: dataBlock ? `${lastText}\n\n${dataBlock}Use the data above to answer.` : lastText }
   ];
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+
   const res = await fetch(CHAT_API_URL_DIRECT, {
     method: 'POST',
+    signal: controller.signal,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${CHAT_API_KEY}`
@@ -244,6 +248,7 @@ async function callGroqWithSearch(history) {
       temperature: 0.7
     })
   });
+  clearTimeout(timeout);
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
