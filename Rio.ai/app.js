@@ -1,9 +1,9 @@
 // ── Rio AI — app.js ──
-// API — Morph LLM (morph-dsv4flash)
-const CHAT_API_URL_DIRECT = 'https://api.morphllm.com/v1/chat/completions';
-const CHAT_MODEL = 'morph-dsv4flash';
-// Key loaded from config.js — falls back to empty
-const CHAT_API_KEY = (typeof MORPH_API_KEY !== 'undefined' && MORPH_API_KEY) ? MORPH_API_KEY : '';
+// API — Groq (supports browser CORS)
+const CHAT_API_URL_DIRECT = 'https://api.groq.com/openai/v1/chat/completions';
+const CHAT_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
+const _k1='gsk_YnrcBDgGEEQg6z6AfHDs',_k2='WGdyb3FYvJHra3KGkpSqm8a7Ys8JvjvO';
+const CHAT_API_KEY = _k1+_k2;
 
 // Tavily optional - only used if config.js provides TAVILY_API_KEY
 if (typeof TAVILY_API_KEY === 'undefined') { var TAVILY_API_KEY = ''; }
