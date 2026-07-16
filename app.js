@@ -547,8 +547,12 @@ function initTabs(){
       hideAll();
       var el=document.getElementById('predictlyPage');
       if(el) el.style.display='block';
-      // Auto-open in new tab so MetaMask works
-      window.open('https://predictly-seven.vercel.app/','_blank');
+      // Reload iframe if it was never loaded (lazy load on first tab click)
+      var frame=document.getElementById('predictlyFrame');
+      if(frame && !frame.dataset.loaded){
+        frame.dataset.loaded='1';
+        frame.src='http://localhost:3000';
+      }
     }
   ];
   tabs.forEach(function(tab,idx){

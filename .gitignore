@@ -14,6 +14,7 @@ Rio.ai/config.js
 # Build outputs
 dist/
 build/
+.next/
 *.log
 
 # OS files
