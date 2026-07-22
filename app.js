@@ -195,7 +195,7 @@ const ND=[
   {key:'rialo',  rx:.30, ry:.28, col:'#00e5ff', sz:44,  url:'https://rialo-doc-ajmul.vercel.app/'},
   {key:'riodex', rx:.70, ry:.28, col:'#f97316', sz:44,  url:'https://rio-dex.vercel.app/swap'},
   {key:'mid',    rx:.50, ry:.44, col:'#00b8cc', sz:18,  url:null},
-  {key:'arc',    rx:.50, ry:.62, col:'#7c6fff', sz:52,  url:'https://arc-rust-five.vercel.app/swap'},
+  {key:'arc',    rx:.50, ry:.62, col:'#7c6fff', sz:52,  url:'https://lumia-pay.vercel.app/'},
 ];
 
 // Edges
@@ -370,17 +370,14 @@ function drawNode(n){
     bgX.beginPath();bgX.moveTo(lx+is*.35,mid);bgX.lineTo(rx,by);bgX.stroke();
   }
   else if(key==='arc'){
-    /* "A" letterform — bold, clean */
+    /* "L" letterform — vertical stem + bottom horizontal */
     const ty=y-is*.9,by=y+is*.85;
-    const lx=x-is*.72,rx=x+is*.72;
-    const barY=y+is*.15;
+    const lx=x-is*.45,rx=x+is*.55;
 
-    // Left leg
-    bgX.beginPath();bgX.moveTo(x,ty);bgX.lineTo(lx,by);bgX.stroke();
-    // Right leg
-    bgX.beginPath();bgX.moveTo(x,ty);bgX.lineTo(rx,by);bgX.stroke();
-    // Crossbar
-    bgX.beginPath();bgX.moveTo(lx+is*.32,barY);bgX.lineTo(rx-is*.32,barY);bgX.stroke();
+    // Vertical stem
+    bgX.beginPath();bgX.moveTo(lx,ty);bgX.lineTo(lx,by);bgX.stroke();
+    // Bottom horizontal
+    bgX.beginPath();bgX.moveTo(lx,by);bgX.lineTo(rx,by);bgX.stroke();
   }
   else if(key==='riodex'){
     /* "R" letterform for Rio DEX — orange */
@@ -464,7 +461,7 @@ class Snake{
 }
 
 function drawLabels(){bgX.font='500 11px Inter,system-ui,sans-serif';bgX.textAlign='center';
-  [{i:1,lbl:'Rialo Network'},{i:2,lbl:'Rio DEX'},{i:4,lbl:'Arc DEX'}].forEach(({i,lbl})=>{
+  [{i:1,lbl:'Rialo Network'},{i:2,lbl:'Rio DEX'},{i:4,lbl:'LumiaPay'}].forEach(({i,lbl})=>{
     const n=nodes[i];if(!n)return;
     bgX.fillStyle='rgba(160,175,210,.75)';bgX.shadowColor=n.col;bgX.shadowBlur=5;
     bgX.fillText(lbl,n.x,n.y+n.sz*1.12+16);bgX.shadowBlur=0})}
@@ -518,7 +515,7 @@ window.addEventListener('resize',()=>{resizeBg();nodes=cn();drawSpark();
 function hideAll(){
   var ds=document.getElementById('dashboardScroll');
   if(ds)ds.classList.add('hidden');
-  ['overviewPage','gamePage'].forEach(function(id){
+  ['gamePage'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
 }
@@ -527,23 +524,19 @@ function initTabs(){
   var tabs=document.querySelectorAll('.ntab');
   var pages=[
     function(){// Dashboard
-      ['overviewPage','gamePage'].forEach(function(id){
+      ['gamePage'].forEach(function(id){
         var el=document.getElementById(id);if(el)el.style.display='none';
       });
       var ds=document.getElementById('dashboardScroll');
       if(ds)ds.classList.remove('hidden');
     },
     function(){// Rio AI
-      hideAll();
-      var el=document.getElementById('overviewPage');
-      if(el) el.style.display='block';
-      // Load correct Rio AI URL based on environment
-      var frame=document.getElementById('rioAiFrame');
-      if(frame && !frame.dataset.loaded){
-        frame.dataset.loaded='1';
-        var isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
-        frame.src=isLocal?'http://localhost:8000/':'https://rio-ai-0033.vercel.app/';
-      }
+      // Open in new tab — chat overlay cannot work inside an iframe
+      var isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
+      window.open(isLocal?'http://localhost:8000/':'https://rio-ai-0033.vercel.app/','_blank');
+      // Keep dashboard on Dashboard tab
+      tabs.forEach(function(t){t.classList.remove('active');});
+      tabs[0].classList.add('active');
     },
     function(){// Game Arena
       hideAll();
