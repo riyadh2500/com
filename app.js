@@ -530,14 +530,6 @@ function initTabs(){
       var ds=document.getElementById('dashboardScroll');
       if(ds)ds.classList.remove('hidden');
     },
-    function(){// Rio AI
-      // Open in new tab — chat overlay cannot work inside an iframe
-      var isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
-      window.open(isLocal?'http://localhost:8000/':'https://rio-ai-0033.vercel.app/','_blank');
-      // Keep dashboard on Dashboard tab
-      tabs.forEach(function(t){t.classList.remove('active');});
-      tabs[0].classList.add('active');
-    },
     function(){// Game Arena
       hideAll();
       var el=document.getElementById('gamePage');
