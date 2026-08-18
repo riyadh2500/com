@@ -191,24 +191,30 @@ let BW,BH,nodes,gT=0,wT=0;
 
 // Node positions — compact, fits between the three cards
 const ND=[
-  {key:'top',    rx:.50, ry:.10, col:'#00d4ff', sz:16,  url:null},
-  {key:'rialo',  rx:.30, ry:.28, col:'#00e5ff', sz:44,  url:'https://rialo-doc-ajmul.vercel.app/'},
-  {key:'riodex', rx:.70, ry:.28, col:'#f97316', sz:44,  url:'https://rio-dex.vercel.app/swap'},
-  {key:'mid',    rx:.50, ry:.44, col:'#00b8cc', sz:18,  url:null},
-  {key:'arc',    rx:.50, ry:.62, col:'#7c6fff', sz:52,  url:'https://lumia-pay.vercel.app/'},
+  {key:'music',    rx:.50, ry:.10, col:'#e040fb', sz:44,  url:'https://music-dapp-mu.vercel.app/'},
+  {key:'rialo',    rx:.30, ry:.28, col:'#00e5ff', sz:44,  url:'https://rialo-doc-ajmul.vercel.app/'},
+  {key:'riodex',   rx:.70, ry:.28, col:'#f97316', sz:44,  url:'https://rio-dex.vercel.app/swap'},
+  {key:'aibuilder',rx:.50, ry:.44, col:'#00e5b0', sz:44,  url:'https://ai-system-design-builder.vercel.app/'},
+  {key:'arc',      rx:.50, ry:.62, col:'#7c6fff', sz:52,  url:'https://lumia-pay.vercel.app/'},
+  {key:'ai_left',  rx:.18, ry:.58, col:'#f43f8a', sz:44,  url:'https://rio-ai-0033.vercel.app/'},
+  {key:'ai_right', rx:.82, ry:.58, col:'#f43f8a', sz:44,  url:null},
 ];
 
 // Edges
 const ED=[
-  {a:0,b:1,col:'#00e5ff',  bend:0},      // top → rialo
-  {a:0,b:2,col:'#f97316',  bend:0},      // top → riodex
-  {a:1,b:3,col:'#00e5ff',  bend:0},      // rialo → mid
-  {a:2,b:3,col:'#f97316',  bend:0},      // riodex → mid
-  {a:3,b:4,col:'#7c6fff',  bend:0},      // mid → arc
-  {a:1,b:2,col:'#00e5ff',  bend:-0.28},  // rialo ↔ riodex curved up
-  {a:1,b:2,col:'#f97316',  bend: 0.28},  // rialo ↔ riodex curved down
-  {a:1,b:4,col:'#00e5ff',  bend: 0.12},  // rialo → arc diagonal
-  {a:2,b:4,col:'#f97316',  bend:-0.12},  // riodex → arc diagonal
+  {a:0,b:1,col:'#00e5ff',  bend:0},
+  {a:0,b:2,col:'#f97316',  bend:0},
+  {a:1,b:3,col:'#00e5ff',  bend:0},
+  {a:2,b:3,col:'#f97316',  bend:0},
+  {a:3,b:4,col:'#7c6fff',  bend:0},
+  {a:1,b:2,col:'#00e5ff',  bend:-0.28},
+  {a:1,b:2,col:'#f97316',  bend: 0.28},
+  {a:1,b:4,col:'#00e5ff',  bend: 0.12},
+  {a:2,b:4,col:'#f97316',  bend:-0.12},
+  {a:1,b:5,col:'#f43f8a',  bend: 0.10},  // rialo → ai_left
+  {a:5,b:4,col:'#f43f8a',  bend: 0.10},  // ai_left → arc
+  {a:2,b:6,col:'#f43f8a',  bend:-0.10},  // riodex → ai_right
+  {a:6,b:4,col:'#f43f8a',  bend:-0.10},  // ai_right → arc
 ];
 
 function resizeBg(){
@@ -220,18 +226,22 @@ function cn(){return ND.map(n=>({...n,x:n.rx*BW,y:n.ry*BH}))}
 /* ── Canvas click & hover for node links ── */
 function getClickedNode(ex,ey){
   if(!nodes)return null;
-  return nodes.find(n=>n.url&&Math.hypot(ex-n.x,ey-n.y)<n.sz*1.1)||null;
+  return nodes.find(n=>n.url&&Math.hypot(ex-n.x,ey-n.y)<n.sz*1.5)||null;
 }
 function initCanvasEvents(){
-  bgC.addEventListener('click',e=>{
+  function getCoords(e){
     const rect=bgC.getBoundingClientRect();
-    const ex=(e.clientX-rect.left),ey=(e.clientY-rect.top);
+    const scaleX=BW/rect.width;
+    const scaleY=BH/rect.height;
+    return{ex:(e.clientX-rect.left)*scaleX, ey:(e.clientY-rect.top)*scaleY};
+  }
+  bgC.addEventListener('click',e=>{
+    const{ex,ey}=getCoords(e);
     const n=getClickedNode(ex,ey);
     if(n&&n.url)window.open(n.url,'_blank');
   });
   bgC.addEventListener('mousemove',e=>{
-    const rect=bgC.getBoundingClientRect();
-    const ex=(e.clientX-rect.left),ey=(e.clientY-rect.top);
+    const{ex,ey}=getCoords(e);
     bgC.style.cursor=getClickedNode(ex,ey)?'pointer':'default';
   });
 }
@@ -257,9 +267,9 @@ function initSnakes(){
   });
 }
 
-const rings=[1,2,4].map(()=>[0,.33,.66].map(o=>({t:o})));
+const rings=[1,2,4,5,6].map(()=>[0,.33,.66].map(o=>({t:o})));
 function drawRings(){
-  [1,2,4].forEach((ni,ii)=>{
+  [1,2,4,5,6].forEach((ni,ii)=>{
     const n=nodes[ni];
     rings[ii].forEach(ring=>{
       ring.t=(ring.t+.003)%1;
@@ -348,7 +358,6 @@ function drawNode(n){
   bgX.strokeStyle=col;
 
   if(key==='rialo'){
-    /* "R" letterform — stem + bump + leg */
     const lx=x-is*.45; // left edge of stem
     const rx=x+is*.45; // right extent
     const ty=y-is*.85; // top
@@ -383,17 +392,43 @@ function drawNode(n){
     /* "R" letterform for Rio DEX — orange */
     const lx=x-is*.42,rx2=x+is*.45;
     const ty=y-is*.85,by=y+is*.85,mid=y-is*.05;
-    // Vertical stem
     bgX.beginPath();bgX.moveTo(lx,ty);bgX.lineTo(lx,by);bgX.stroke();
-    // Top bump (D-shape)
     bgX.beginPath();
     bgX.moveTo(lx,ty);bgX.lineTo(lx+is*.15,ty);
     bgX.bezierCurveTo(rx2+is*.1,ty,rx2+is*.1,mid,lx+is*.15,mid);
     bgX.lineTo(lx,mid);bgX.stroke();
-    // Middle bar
     bgX.beginPath();bgX.moveTo(lx,mid);bgX.lineTo(lx+is*.4,mid);bgX.stroke();
-    // Diagonal leg
     bgX.beginPath();bgX.moveTo(lx+is*.35,mid);bgX.lineTo(rx2,by);bgX.stroke();
+  }
+  else if(key==='music'){
+    /* "M" letterform — two peaks */
+    const lx=x-is*.55,rx2=x+is*.55;
+    const ty=y-is*.75,by=y+is*.75;
+    bgX.beginPath();
+    bgX.moveTo(lx,by);
+    bgX.lineTo(lx,ty);
+    bgX.lineTo(x,y);
+    bgX.lineTo(rx2,ty);
+    bgX.lineTo(rx2,by);
+    bgX.stroke();
+  }
+  else if(key==='aibuilder'||key==='ai_left'||key==='ai_right'){
+    /* "A" letterform — triangle with crossbar */
+    const lx=x-is*.55,rx2=x+is*.55;
+    const ty=y-is*.85,by=y+is*.75;
+    const crossY=y+is*.15;
+    bgX.beginPath();
+    bgX.moveTo(x,ty);
+    bgX.lineTo(rx2,by);
+    bgX.stroke();
+    bgX.beginPath();
+    bgX.moveTo(x,ty);
+    bgX.lineTo(lx,by);
+    bgX.stroke();
+    bgX.beginPath();
+    bgX.moveTo(lx+is*.28,crossY);
+    bgX.lineTo(rx2-is*.28,crossY);
+    bgX.stroke();
   }
 
   bgX.restore();
@@ -461,26 +496,117 @@ class Snake{
 }
 
 function drawLabels(){bgX.font='500 11px Inter,system-ui,sans-serif';bgX.textAlign='center';
-  [{i:1,lbl:'Rialo Network'},{i:2,lbl:'Rio DEX'},{i:4,lbl:'LumiaPay'}].forEach(({i,lbl})=>{
+  [{i:0,lbl:'Music dApp'},{i:1,lbl:'rialo-doc'},{i:2,lbl:'Rio DEX'},{i:3,lbl:'AI Builder'},{i:4,lbl:'LumiaPay'},{i:5,lbl:'Ai'},{i:6,lbl:'Ai'}].forEach(({i,lbl})=>{
     const n=nodes[i];if(!n)return;
     bgX.fillStyle='rgba(160,175,210,.75)';bgX.shadowColor=n.col;bgX.shadowBlur=5;
     bgX.fillText(lbl,n.x,n.y+n.sz*1.12+16);bgX.shadowBlur=0})}
 
-function drawGrid(){bgX.fillStyle='rgba(255,255,255,.022)';
-  for(let x=19;x<BW;x+=38)for(let y=19;y<BH;y+=38){bgX.beginPath();bgX.arc(x,y,.85,0,TAU);bgX.fill()}}
+/* ── Stars ─────────────────────────────────── */
+let stars=[];
+function initStars(){
+  stars=[];
+  for(let i=0;i<180;i++){
+    stars.push({
+      x:Math.random()*BW, y:Math.random()*BH,
+      r:Math.random()*1.2+0.2,
+      a:Math.random(),
+      spd:Math.random()*0.004+0.001,
+      phase:Math.random()*TAU
+    });
+  }
+}
 
-function drawAurora(){wT+=.006;
-  const layers=[{yF:.72,amp:26,f1:.0036,f2:.0072,ph:0,c:'0,130,150',a:.13},
-    {yF:.76,amp:20,f1:.005,f2:.010,ph:1.3,c:'0,100,120',a:.11},
-    {yF:.80,amp:15,f1:.007,f2:.014,ph:2.2,c:'0,70,100',a:.09},
-    {yF:.84,amp:10,f1:.009,f2:.018,ph:3.1,c:'15,35,75',a:.13}];
-  layers.forEach(w=>{const BY=BH*w.yF,ph=wT+w.ph;bgX.beginPath();bgX.moveTo(0,BH);
-    for(let x=0;x<=BW;x+=2){const y=BY+Math.sin(x*w.f1+ph)*w.amp+Math.sin(x*w.f2+ph*.62)*w.amp*.42;bgX.lineTo(x,y)}
-    bgX.lineTo(BW,BH);bgX.closePath();const wg=bgX.createLinearGradient(0,BY-w.amp,0,BH);
-    wg.addColorStop(0,`rgba(${w.c},${(w.a+.04).toFixed(3)})`);wg.addColorStop(.55,`rgba(${w.c},${w.a})`);wg.addColorStop(1,`rgba(${w.c},0)`);
-    bgX.fillStyle=wg;bgX.fill()})}
+function drawStars(){
+  stars.forEach(s=>{
+    s.phase+=s.spd;
+    const alpha=0.15+Math.abs(Math.sin(s.phase))*0.55;
+    bgX.beginPath();bgX.arc(s.x,s.y,s.r,0,TAU);
+    bgX.fillStyle=`rgba(200,220,255,${alpha})`;
+    bgX.fill();
+  });
+}
 
-function frame(){gT+=.016;bgX.clearRect(0,0,BW,BH);drawGrid();drawEdges();
+/* ── Nebula clouds ─────────────────────────── */
+let nebulas=[];
+function initNebulas(){
+  nebulas=[
+    {x:BW*.18,y:BH*.30,rx:BW*.28,ry:BH*.22,col:'0,180,255',a:.045,drift:0},
+    {x:BW*.80,y:BH*.25,rx:BW*.22,ry:BH*.20,col:'255,60,180',a:.038,drift:1.5},
+    {x:BW*.50,y:BH*.65,rx:BW*.30,ry:BH*.18,col:'120,100,255',a:.042,drift:3.0},
+    {x:BW*.70,y:BH*.70,rx:BW*.20,ry:BH*.15,col:'0,230,180',a:.028,drift:2.1},
+  ];
+}
+
+function drawNebulas(){
+  nebulas.forEach(n=>{
+    n.drift+=0.003;
+    const ox=Math.sin(n.drift)*BW*.012;
+    const oy=Math.cos(n.drift*0.7)*BH*.008;
+    const g=bgX.createRadialGradient(n.x+ox,n.y+oy,0,n.x+ox,n.y+oy,Math.max(n.rx,n.ry));
+    g.addColorStop(0,`rgba(${n.col},${n.a})`);
+    g.addColorStop(0.5,`rgba(${n.col},${n.a*.4})`);
+    g.addColorStop(1,`rgba(${n.col},0)`);
+    bgX.save();
+    bgX.scale(1, n.ry/n.rx);
+    bgX.beginPath();bgX.arc((n.x+ox),( n.y+oy)*(n.rx/n.ry),n.rx,0,TAU);
+    bgX.fillStyle=g;bgX.fill();
+    bgX.restore();
+  });
+}
+
+function drawGrid(){
+  const spacing=52;
+  for(let gx=0;gx<BW;gx+=spacing){
+    for(let gy=0;gy<BH;gy+=spacing){
+      const dx=(gx-BW/2)/BW, dy=(gy-BH/2)/BH;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      const pulse=0.012+Math.abs(Math.sin(gT*0.6+dist*8))*0.022;
+      bgX.beginPath();bgX.arc(gx,gy,0.9,0,TAU);
+      bgX.fillStyle=`rgba(80,130,220,${pulse})`;
+      bgX.fill();
+    }
+  }
+}
+
+function drawAurora(){wT+=.005;
+  const layers=[
+    {yF:.60,amp:38,f1:.0028,f2:.0055,ph:0,   c:'0,200,255',  a:.10},
+    {yF:.65,amp:30,f1:.0038,f2:.0076,ph:0.8,  c:'0,160,200',  a:.09},
+    {yF:.70,amp:26,f1:.0046,f2:.0092,ph:1.6,  c:'60,80,200',  a:.11},
+    {yF:.74,amp:20,f1:.0055,f2:.011, ph:2.4,  c:'120,60,220', a:.10},
+    {yF:.78,amp:16,f1:.0068,f2:.0136,ph:3.1,  c:'180,40,180', a:.08},
+    {yF:.82,amp:12,f1:.008, f2:.016, ph:0.4,  c:'20,40,100',  a:.12},
+    {yF:.87,amp: 8,f1:.010, f2:.020, ph:1.9,  c:'10,25,70',   a:.14},
+  ];
+  layers.forEach(w=>{
+    const BY=BH*w.yF, ph=wT+w.ph;
+    bgX.beginPath();bgX.moveTo(0,BH);
+    for(let x=0;x<=BW;x+=2){
+      const y=BY
+        +Math.sin(x*w.f1+ph)*w.amp
+        +Math.sin(x*w.f2+ph*.65)*w.amp*.45
+        +Math.sin(x*w.f1*.5+ph*1.3)*w.amp*.2;
+      bgX.lineTo(x,y);
+    }
+    bgX.lineTo(BW,BH);bgX.closePath();
+    const wg=bgX.createLinearGradient(0,BY-w.amp*1.5,0,BH);
+    wg.addColorStop(0,`rgba(${w.c},${(w.a+.05).toFixed(3)})`);
+    wg.addColorStop(.4,`rgba(${w.c},${w.a})`);
+    wg.addColorStop(1,`rgba(${w.c},0)`);
+    bgX.fillStyle=wg;bgX.fill();
+  });
+
+  /* horizontal shimmer lines across aurora */
+  for(let i=0;i<3;i++){
+    const yy=BH*(0.62+i*.06)+Math.sin(wT*1.2+i*2)*18;
+    const shimmerAlpha=0.03+Math.abs(Math.sin(wT*0.8+i))*0.04;
+    bgX.beginPath();bgX.moveTo(0,yy);bgX.lineTo(BW,yy);
+    bgX.strokeStyle=`rgba(0,220,255,${shimmerAlpha})`;
+    bgX.lineWidth=1;bgX.stroke();
+  }
+}
+function frame(){gT+=.016;bgX.clearRect(0,0,BW,BH);
+  drawNebulas();drawStars();drawGrid();drawEdges();
   snakes.forEach(s=>{s.update();s.draw()});drawRings();nodes.forEach(n=>drawNode(n,gT));
   drawLabels();drawAurora();requestAnimationFrame(frame)}
 
@@ -488,7 +614,7 @@ function frame(){gT+=.016;bgX.clearRect(0,0,BW,BH);drawGrid();drawEdges();
    INIT
 ═══════════════════════════════════════════ */
 function init(){
-  resizeBg();nodes=cn();initSnakes();frame();
+  resizeBg();nodes=cn();initStars();initNebulas();initSnakes();frame();
   initCanvasEvents();
   initTabs();
   drawSpark();animDonut();
@@ -506,7 +632,7 @@ function init(){
 }
 
 window.addEventListener('load',()=>requestAnimationFrame(()=>requestAnimationFrame(init)));
-window.addEventListener('resize',()=>{resizeBg();nodes=cn();drawSpark();
+window.addEventListener('resize',()=>{resizeBg();nodes=cn();initStars();initNebulas();drawSpark();
   const c=document.getElementById('volChart');if(c){c.width=0;c.height=0}drawVol()});
 
 /* ═══════════════════════════════════════════
